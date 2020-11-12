@@ -18,5 +18,5 @@ http.createServer(function(req,res){ // creates a server
     res.end("hello"); 
     getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79').then(result => {bla = result});
     console.log(bla);
-    console.log(holo);
+    console.log("holo");
 }).listen(port); // attaches this server to the port no.
