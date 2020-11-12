@@ -9,13 +9,7 @@ const client = new pg({ //connects to the database
 });
 client.connect();
 
-client.query(CREATE TABLE bus(
-  VehicleID int,
-  DT datetime,
-  DirectionNum int,
-  Lat decimal,
-  Lon decimal
-))
+client.query("CREATE TABLE bus(VehicleID int, DT datetime, DirectionNum int, Lat decimal, Lon decimal)")
 function getBus(bus, key){
 	var imp1 = 'https://api.wmata.com/Bus.svc/json/jBusPositions?RouteID='+bus+'&api_key='+key
 	return new Promise(function(resolve, reject){
