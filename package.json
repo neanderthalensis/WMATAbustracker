@@ -19,6 +19,7 @@
   "homepage": "https://github.com/neanderthalensis/WMATAtracker#readme",
   "dependencies": {
     "ls": "^0.2.1",
+    "pg": "^8.5.0",
     "request": "^2.88.2"
   }
 }
