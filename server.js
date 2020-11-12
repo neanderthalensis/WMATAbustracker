@@ -11,10 +11,10 @@ return new Promise(function(resolve, reject){
 		else {resolve(body)};
 })});
 }
-getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79').then(result => {bla = result})
+(async () => {getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79').then(res => {bla = res})
 console.log(bla)
 console.log("holo")
-
+})
 var port = process.env.PORT || 5000; 
 http.createServer(function(req,res){ // creates a server
     res.writeHead(200,{'Content-type':'text/plain'}); //Specifies that the respones "hello" is a text
