@@ -18,8 +18,8 @@ const client = new Client({ //connects to the database
   ssl: {rejectUnauthorized: false}
 });
 client.connect();
-client.query("DROP TABLE bus;")
-client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
+//client.query("DROP TABLE bus;")
+//client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
 
 
 
