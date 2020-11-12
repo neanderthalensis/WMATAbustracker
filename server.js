@@ -1,11 +1,20 @@
 const http = require('http'); 
 const request = require('request');
 
-	console.log("hola")
+console.log("hola")
+function getBus(bus, key){
+var imp1 = 'https://api.wmata.com/Bus.svc/json/jBusPositions?RouteID='+bus+'&api_key='+key
+return new Promise(function(resolve, reject){
+	request.get(//does the request
+		imp1, {json: true}, (err, res, body) =>{
+		if (err) {reject(err);}
+		else {resolve(body)};
+})});
+}
 
 var port = process.env.PORT || 5000; 
 http.createServer(function(req,res){ // creates a server
     res.writeHead(200,{'Content-type':'text/plain'}); //Specifies that the respones "hello" is a text
     res.end("hello"); 
-    console.log("hihihih")
+    console.log(getbus('C4', 'b259cbc5f9a34a0da7192b3679918b79'));
 }).listen(port); // attaches this server to the port no.
