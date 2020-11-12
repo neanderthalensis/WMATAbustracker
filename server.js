@@ -1,6 +1,6 @@
 const http = require('http'); 
 const request = require('request');
-const pg = require('pg');
+const { pg } = require('pg');
 
 
 const client = new pg({ //connects to the database
