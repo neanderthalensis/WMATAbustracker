@@ -19,7 +19,7 @@ const client = new Client({ //connects to the database
 });
 client.connect();
 //client.query("DROP TABLE bus;")
-//client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
+client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
 
 
 
