@@ -22,12 +22,12 @@ client.query("DROP TABLE bus;")
 client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
 
 
-/*
+
 (async () => {
 	var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79');
 	console.log(bla);
 })()
-*/
+/*
 (async () => {
 	var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79')
 	console.log(bla)
@@ -35,6 +35,7 @@ client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
 	//var qvals = await [new Date(), bla]
 	//client.query(qimp, bla)
 })()
+*/
 /*
 var port = process.env.PORT || 5000; 
 http.createServer(function(req,res){ // creates a server
