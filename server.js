@@ -1,5 +1,5 @@
 const http = require('http'); 
-const request = require('request');
+const request = require('D:\\Users\\tyrli\\Documents\\Things\\Node-Web\\node_modules\\request');
 
 	console.log("hola")
 

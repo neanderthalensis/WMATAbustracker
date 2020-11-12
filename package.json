@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/neanderthalensis/WMATAtracker/issues"
   },
-  "homepage": "https://github.com/neanderthalensis/WMATAtracker#readme"
+  "homepage": "https://github.com/neanderthalensis/WMATAtracker#readme",
+  "dependencies": {
+    "ls": "^0.2.1"
+  }
 }
