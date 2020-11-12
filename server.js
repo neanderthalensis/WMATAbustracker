@@ -1,9 +1,8 @@
 const http = require('http'); 
 const request = require('request');
-const { pg } = require('pg');
+const { Client } = require('pg');
 
-
-const client = new pg({ //connects to the database
+const client = new Client({ //connects to the database
   connectionString: process.env.DATABASE_URL,
   ssl: {rejectUnauthorized: false}
 });
