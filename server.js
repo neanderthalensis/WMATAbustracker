@@ -11,9 +11,9 @@ return new Promise(function(resolve, reject){
 		else {resolve(body)};
 })});
 }
-getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79').then(result => {bla = result});
-console.log(bla);
-console.log("holo");
+getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79').then(result => {bla = result})
+await console.log(bla)
+console.log("holo")
 
 var port = process.env.PORT || 5000; 
 http.createServer(function(req,res){ // creates a server
