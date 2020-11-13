@@ -18,8 +18,8 @@ var handleRequest = (req, res) => {
 		res.end();
 		});
 	}
-	else if(url.includes("front.js")){
-		fs.readFile("front.js", function(err, data){
+	else if(url.includes("showit.js")){
+		fs.readFile("showit.js", function(err, data){
 		if(err){}
 		else{
 			res.writeHead(200, {'Content-Type': 'text/js'});
