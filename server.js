@@ -13,7 +13,7 @@ let handleRequest = (req, res) => {
     		if(err){}
 			else{res.write(data)}
     	})}
-    else if(req.url == "/index.html"){
+    else {
     	res.writeHead(200, {'Content-Type': 'text/html'});
     	fs.readFile('./index.html', null, function (err, data) {
         if (err) {
