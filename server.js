@@ -10,14 +10,14 @@ let handleRequest = (req, res) => {
 
 	fs.readFile("index.html", function(err, data){
    	if(err){
-      response.writeHead(404);
-      response.write("Not Found!");
+      res.writeHead(404);
+      res.write("Not Found!");
    }
    else{
-      response.writeHead(200, {'Content-Type': 'text/html'});
+      res.writeHead(200, {'Content-Type': 'text/html'});
       response.write(data);
    }
-   response.end();
+   res.end();
 });
 
 };
