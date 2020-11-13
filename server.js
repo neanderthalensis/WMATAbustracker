@@ -12,14 +12,17 @@ function getBus(bus, key){
 })});
 }
 
-
-const client = new Client({ //connects to the database
+(async () => {
+const client = await new Client({ //connects to the database
   connectionString: process.env.DATABASE_URL,
   ssl: {rejectUnauthorized: false}
 });
 client.connect();
+
 console.log("asdfhasdjkhf")
-(async () => {
+
+
+
 	var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79');
 	console.log(bla);
 })()
