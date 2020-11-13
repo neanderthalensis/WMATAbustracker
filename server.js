@@ -12,7 +12,7 @@ var handleRequest = (req, res) => {
 		fs.readFile("index.css", function(err, data){
 		if(err){}
 		else{
-			res.writeHead(200, {'Content-Type': 'text/html'});
+			res.writeHead(200, {'Content-Type': 'text/css'});
 			res.write(data);
 		}
 		res.end();
