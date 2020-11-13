@@ -21,7 +21,7 @@ client.connect();
 var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79')
 var qimp =  "INSERT INTO bus(ts, json) VALUES($1, $2) RETURNING *"
 var qvals = ['CURRENT_TIMESTAMP', bla]
-client.query(qimp, bla)
+client.query(qimp, qvals)
 
 console.log("asdfhasdjkhf")
 
