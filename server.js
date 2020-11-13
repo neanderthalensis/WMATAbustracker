@@ -11,7 +11,8 @@ let handleRequest = (req, res) => {
 		case "/index.css" :
 			res.writeHead(200, {'Content-Type': 'text/css'});
     		fs.readFile('./index.css', null, function (err, data) {
-				res.write(data)
+    		if(err){}
+			else{res.write(data)}
     		});
 		default:
     		res.writeHead(200, {'Content-Type': 'text/html'});
