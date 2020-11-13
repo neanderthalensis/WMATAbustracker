@@ -18,6 +18,16 @@ var handleRequest = (req, res) => {
 		res.end();
 		});
 	}
+	else if(url.includes("front.js")){
+		fs.readFile("front.js", function(err, data){
+		if(err){}
+		else{
+			res.writeHead(200, {'Content-Type': 'text/js'});
+			res.write(data);
+		}
+		res.end();
+		});
+	}
 	else{
 		fs.readFile("index.html", function(err, data){
    		if(err){
