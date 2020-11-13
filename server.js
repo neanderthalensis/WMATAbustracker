@@ -22,7 +22,7 @@ var handleRequest = (req, res) => {
 		fs.readFile("showit.js", function(err, data){
 		if(err){}
 		else{
-			res.writeHead(200, {'Content-Type': 'text/js'});
+			res.writeHead(200, {'Content-Type': 'text/javascript'});
 			res.write(data);
 		}
 		res.end();
