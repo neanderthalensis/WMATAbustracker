@@ -15,7 +15,7 @@ let handleRequest = (req, res) => {
    }
    else{
       res.writeHead(200, {'Content-Type': 'text/html'});
-      response.write(data);
+      res.write(data);
    }
    res.end();
 });
