@@ -15,7 +15,8 @@ var handleRequest = (req, res) => {
 			res.writeHead(200, {'Content-Type': 'text/html'});
 			res.write(data);
 		}
-		})
+		res.end();
+		});
 	}
 	else{
 		fs.readFile("index.html", function(err, data){
@@ -27,7 +28,7 @@ var handleRequest = (req, res) => {
 			res.writeHead(200, {'Content-Type': 'text/html'});
 		  	res.write(data);
     	}
-    res.end();
+    	res.end();
     });
 	}
 };
