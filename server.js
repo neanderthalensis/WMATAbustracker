@@ -18,24 +18,20 @@ const client = new Client({ //connects to the database
   ssl: {rejectUnauthorized: false}
 });
 client.connect();
-//client.query("DROP TABLE bus;")
-client.query("CREATE TABLE bus(ts TIMESTAMP PRIMARY KEY, json JSON)")
-
-
 
 (async () => {
 	var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79');
 	console.log(bla);
 })()
-/*
+
 (async () => {
 	var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79')
 	console.log(bla)
 	//var qimp =  await "INSERT INTO bus(ts, json) VALUES($1, $2) RETURNING *"
-	//var qvals = await [new Date(), bla]
+	//var qvals = await ['CURRENT_TIMESTAMP', bla]
 	//client.query(qimp, bla)
 })()
-*/
+
 /*
 var port = process.env.PORT || 5000; 
 http.createServer(function(req,res){ // creates a server
