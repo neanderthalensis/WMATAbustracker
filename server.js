@@ -1,4 +1,28 @@
-const http = require('http');
+// Require express and create an instance of it
+var express = require('express');
+var app = express();
+
+var port = process.env.PORT || 5000;
+
+// on the request to root (localhost:3000/)
+app.get(port, function (req, res) {
+    res.send('<b>My</b> first express http server');
+});
+
+
+// On localhost:3000/welcome
+app.get('/welcome', function (req, res) {
+    res.send('<b>Hello</b> welcome to my http server made with express');
+});
+
+// Change the 404 message modifing the middleware
+app.use(function(req, res, next) {
+    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
+});
+
+
+
+/*const http = require('http');
 const fs = require('fs')
 const request = require('request');
 const { Client } = require('pg');
@@ -44,3 +68,4 @@ var handleRequest = (req, res) => {
 };
 
 http.createServer(handleRequest).listen(port);
+*/
