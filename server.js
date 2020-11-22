@@ -1,71 +1,36 @@
 // Require express and create an instance of it
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
+const path = require('path')
+const Client = require("pg").Pool;
 
-var port = process.env.PORT || 5000;
-
-// on the request to root (localhost:3000/)
-app.get(port, function (req, res) {
-    res.send('<b>My</b> first express http server');
+const client = new Client({ //connects to the database
+	connectionString: process.env.DATABASE_URL,
+	ssl: {rejectUnauthorized: false}
 });
 
 
-// On localhost:3000/welcome
-app.get('/welcome', function (req, res) {
-    res.send('<b>Hello</b> welcome to my http server made with express');
+const port = process.env.PORT || 5000;
+
+
+app.listen(port, () => console.log(`Listening on port ${port}!`));
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+
+app.get("/api/v1/bus", (req, res) => {
+  const { line } = req.params;
+
+  client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS deviation, json_array_elements(json->'BusPositions')->'Lat' AS lat, json_array_elements(json->'BusPositions')->'Lon' AS lon, json_array_elements(json->'BusPositions')->'RouteID' AS route, json_array_elements(json->'BusPositions')->'DirectionNum' AS direction FROM bus;",
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+
+      res.status(200).json(results.rows);
+    }
+  );
 });
 
-// Change the 404 message modifing the middleware
-app.use(function(req, res, next) {
-    res.status(404).send("Sorry, that route doesn't exist. Have a nice day :)");
-});
-
-
-
-/*const http = require('http');
-const fs = require('fs')
-const request = require('request');
-const { Client } = require('pg');
-
-
-var port = process.env.PORT || 5000;
-
-var handleRequest = (req, res) => {
-	var url = req.url
-	if(url.includes("index.css")){
-		fs.readFile("index.css", function(err, data){
-		if(err){}
-		else{
-			res.writeHead(200, {'Content-Type': 'text/css'});
-			res.write(data);
-		}
-		res.end();
-		});
-	}
-	else if(url.includes("showit.js")){
-		fs.readFile("showit.js", function(err, data){
-		if(err){}
-		else{
-			res.writeHead(200, {'Content-Type': 'text/javascript'});
-			res.write(data);
-		}
-		res.end();
-		});
-	}
-	else{
-		fs.readFile("index.html", function(err, data){
-   		if(err){
-			res.writeHead(404);
-			res.write("Not Found!");
-    	}
-    	else{
-			res.writeHead(200, {'Content-Type': 'text/html'});
-		  	res.write(data);
-    	}
-    	res.end();
-    });
-	}
-};
-
-http.createServer(handleRequest).listen(port);
-*/

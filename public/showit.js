@@ -8,7 +8,7 @@ svg.append("line")
    .attr("x1", 100)
    .attr("y1", 100)
    .attr("x2", 200) 
-   .attr("y2", 200)
+   .attr("y2", 700)
    .style("stroke", "rgb(255,250,60)")
    .style("stroke-width", 2);
 }
