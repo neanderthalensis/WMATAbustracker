@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.get("/api/v1/bus", (req, res) => {
+app.get("/api/bus", (req, res) => {
   const { line } = req.params;
 
   client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS deviation, json_array_elements(json->'BusPositions')->'Lat' AS lat, json_array_elements(json->'BusPositions')->'Lon' AS lon, json_array_elements(json->'BusPositions')->'RouteID' AS route, json_array_elements(json->'BusPositions')->'DirectionNum' AS direction FROM bus;",
