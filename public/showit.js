@@ -12,6 +12,6 @@ window.onload = function(){
    var data = JSON.parse(this.response)
    data.forEach((buspos) => {
 		console.log(buspos.ts)
-}
+})
 
 }
