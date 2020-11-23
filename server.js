@@ -24,7 +24,7 @@ app.get("/api/route", (req, res) => {
   const { line } = req.params;
   imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=C4&api_key='+key
   request.get(imp1, {json:true}, (err, res, body) => {
-      if (err) {reject(err)};
+      if (err) {reject(err)}
       else {body};
   }
     )
