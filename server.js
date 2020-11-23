@@ -13,7 +13,7 @@ const client = new Client({ //connects to the database
 
 
 const port = process.env.PORT || 5000;
-var key = 'b259cbc5f9a34a0da7192b3679918b79'
+const key = process.env.API_KEY
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));
 
@@ -24,8 +24,8 @@ app.get("/api/route", (req, res) => {
   const { line } = req.params;
   imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=C4&api_key='+key
   request.get(imp1, {json:true}, (err, res, body) => {
-      if (err) {reject(err);}
-      else {resolve(body)};
+      if (err) {reject(err)};
+      else {body};
   }
     )
 });

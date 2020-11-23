@@ -19,8 +19,8 @@ function getBus(bus, key){
 	});
 
 	client.connect();
-	for(i=0;i<1440;i++){
-		var bla = await getBus('C4', 'b259cbc5f9a34a0da7192b3679918b79')
+	for(i=0;i<118;i++){
+		var bla = await getBus('C4', const key = process.env.API_KEY)
 		var qimp =  "INSERT INTO bus(ts, json) VALUES($1, $2) RETURNING *"
 		var qvals = [new Date(), bla]
 		client.query(qimp, qvals)
