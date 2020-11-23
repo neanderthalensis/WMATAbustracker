@@ -8,6 +8,6 @@ d3.json('https://wmatabustracker.herokuapp.com/api/bus', function(data) {
         .enter()
         .append("p")
         .text(function(d) {
-            return d.lat + ", " + d.long;
+            return d.lat*2 + ", " + d.lon;
         });
 });

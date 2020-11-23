@@ -28,7 +28,7 @@ function getBus(bus, key){
 		var qvals2 = [new Date(new Date()-86400000)]
 		client.query(qimp2, qvals2)
 		console.log("I did it!")
-		await new Promise(resolve => setTimeout(resolve, 60000));
+		await new Promise(resolve => setTimeout(resolve, 30000));
 	}
 })()
 
