@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get("/api/route", (req, res) => {
   const { line } = req.params;
   imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=C4&api_key='+key
-  request(imp).pipe(res)
+  request(imp1).pipe(res)
 });
 
 
