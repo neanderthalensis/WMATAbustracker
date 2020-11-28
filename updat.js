@@ -2,7 +2,7 @@ const http = require('http');
 const request = require('request');
 const { Client } = require('pg');
 
-function getBus(bus, key){
+function getBus(bus, key){ // does the request
 	var imp1 = 'https://api.wmata.com/Bus.svc/json/jBusPositions?RouteID='+bus+'&api_key='+key
 	return new Promise(function(resolve, reject){
 		request.get(//does the request
@@ -22,13 +22,13 @@ var update = async function(){
 	var bla = await getBus('C4', process.env.API_KEY)
 	var qimp =  "INSERT INTO bus(ts, json) VALUES($1, $2) RETURNING *"
 	var qvals = [new Date(), bla]
-	await client.query(qimp, qvals)
+	await client.query(qimp, qvals) // inserts new info into the database
 	var qimp2 = "DELETE FROM bus WHERE ts < $1"
 	var qvals2 = [new Date(new Date()-86400000)]
-	await client.query(qimp2, qvals2)
+	await client.query(qimp2, qvals2) // removes old stuff
 	client.end()
-	console.log("I did it!")
+	console.log("I did it!") // spams the logs
 
 }
 
-setInterval(update, 30000)
+setInterval(update, 30000) // repeats every 30 seconds...

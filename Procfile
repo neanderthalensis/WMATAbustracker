@@ -1,2 +1,2 @@
 web:    node server.js
-clock:  node updat.js
+worker:  node updat.js
