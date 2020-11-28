@@ -26,7 +26,9 @@ var update = async function(){
 	var qimp2 = "DELETE FROM bus WHERE ts < $1"
 	var qvals2 = [new Date(new Date()-86400000)]
 	client.query(qimp2, qvals2)
+	client.end()
 	console.log("I did it!")
+
 }
 
 setInterval(update, 30000)
