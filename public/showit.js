@@ -1,8 +1,10 @@
+function Plot(filbus, filroute){
 
 
-function RoutePos(busdata, dir){ //determines position of the bus and assigns value
-	d3.json('https://wmatabustracker.herokuapp.com/api/route', function(routedata){
-		console.log(busdata)
+}
+
+function PrepData(busdata, dir){ //determines position of the bus and assigns value
+	let hey = d3.json('https://wmatabustracker.herokuapp.com/api/route', function(routedata){
 		var filbus = busdata.filter((d) => {return d.directionnum == dir})
 		var filroute;
 		if (dir == 0){filroute = routedata.Direction0.Shape} //bad 
@@ -27,23 +29,23 @@ function RoutePos(busdata, dir){ //determines position of the bus and assigns va
 			filroute.forEach((elo, n, aro) => {
 				if (n < (aro.length-1)){ //fit it on the route
 				if ((ele.lat >= elo.Lat & ele.lon <= elo.Lon & ele.lat <= aro[n+1].Lat & ele.lon >= aro[n+1].Lon) || (ele.lat <= elo.Lat & ele.lon <= elo.Lon & ele.lat >= aro[n+1].Lat & ele.lon >= aro[n+1].Lon) || (ele.lat <= elo.Lat & ele.lon >= elo.Lon & ele.lat >= aro[n+1].Lat & ele.lon <= aro[n+1].Lon) || (ele.lat >= elo.Lat & ele.lon >= elo.Lon & ele.lat <= aro[n+1].Lat & ele.lon <= aro[n+1].Lon)){
-					if(((elo.Lat-aro[n+1].Lat)/(elo.Lon-aro[n+1].Lon)).toFixed(0) == ((elo.Lat-ele.lat)/(elo.Lon-ele.lon)).toFixed(0)){
-						ele.tot = (elo.tot + (Math.sqrt((Math.abs(elo.Lat - ele.lat)^2)+(Math.abs(elo.Lon - ele.lon)^2))))/(aro[aro.length].tot)
-					}
+//					if(((elo.Lat-aro[n+1].Lat)/(elo.Lon-aro[n+1].Lon)).toFixed(0) == ((elo.Lat-ele.lat)/(elo.Lon-ele.lon)).toFixed(0)){
+						ele.tot = (elo.tot + Math.sqrt((Math.pow(Math.abs(elo.Lat - ele.lat), 2))+(Math.pow(Math.abs(elo.Lon - ele.lon), 2))))*100/aro[aro.length-1].tot
+//					}
 				}
 
 			}
 
 			})
 		})
+		console.log(filbus)
+	})
 
-		console.log(filroute)
-    	console.log(filbus)
-	});
 };
 
-// (Math.sqrt((Math.abs(elo.Lat - ele.lat)^2)+(Math.abs(elo.Lon - ele.lon)^2)))
-d3.json('https://wmatabustracker.herokuapp.com/api/bus', function(data) {
+function RunStuff(data) {
+		PrepData(data, 0)
+		PrepData(data, 1)
+	}
 
-    RoutePos(data, 1)
-});
+d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff);
