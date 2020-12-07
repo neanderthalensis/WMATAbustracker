@@ -1,7 +1,7 @@
 {
   "name": "wmatatracker",
   "version": "1.0.0",
-  "description": "Trucks a bus",
+  "description": "Tracks a bus",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

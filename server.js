@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}!`));
+app.listen(port, () => console.log(`Dat port is ${port}!`));
 
 
 app.use(express.static(path.join(__dirname, 'public')));
