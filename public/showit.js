@@ -1,6 +1,14 @@
-function Plot(filbus){
+function WhichTop(filbus){
+	var max = Math.max(Math.abs(d3.min(filbus, function(d) { return d.deviation; })), Math.abs(d3.max(filbus, function(d) { return d.deviation; })))
+	return{
+		max: max,
+		min: max*-1
+	}
+}
+
+function Plot(filbus, upavgs, downavgs){
 	var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    	width = 460 - margin.left - margin.right,
+    	width = 0.9*screen.width - margin.left - margin.right,
     	height = 400 - margin.top - margin.bottom;
     var svg = d3.select("#plothere")
   		.append("svg")
@@ -8,38 +16,37 @@ function Plot(filbus){
     	.attr("height", height + margin.top + margin.bottom)
   		.append("g")
     	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    var x = d3.scaleLinear()
+    var xs = d3.scaleLinear()
     	.domain([0, 100])
     	.range([ 0, width ]);
     svg.append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-    var y = d3.scaleLinear()
-      .domain([d3.min(filbus, function(d) { return d.deviation; }), d3.max(filbus, function(d) { return d.deviation; })])
+      .attr("transform", "translate(0," + height*0.5 + ")")
+      .call(d3.axisTop(xs));
+    var ys = d3.scaleLinear()
+      .domain([WhichTop(filbus).min, WhichTop(filbus).max])
       .range([ height, 0 ]);
     svg.append("g")
-      .call(d3.axisLeft(y));
- 	svg.append('g')
-	  .selectAll("dot")
-      .data(filbus)
-      .enter()
-      .append("circle")
-      .attr("cx", function (d) { return x(d.tot)} )
-      .attr("cy", function (d) { return y(d.deviation)})
-      .attr("r", 1.5)
-      .style("fill", "#69b3a2");
-    svg.append('g')
-   	  .selectAll("lines")
-      .data(filbus)
-      .enter()
-      .append("path");
-    d3.select("path")
-      .attr("d", 
-      	d3.line()
-        .x(function(d) { return x(d.x) })
-        .y(function(d) { return y(d.y) })
-        )
-      .style("fill", "#69b3a2");
+      .call(d3.axisLeft(ys));
+    var aline = d3.line()
+    	.x( (d) => {return xs(d.where);})
+    	.y( (d) => {return ys(d.mean);});
+ 	// svg.append('g')
+	 //   .selectAll("dot")
+  //      .data(upavgs)
+  //      .enter()
+  //      .append("circle")
+  //      .attr("cx", function (d) { return xs(d.where)} )
+  //      .attr("cy", function (d) { return ys(d.mean)})
+  //      .attr("r", 1.5)
+  //      .style("fill", "#69b3a2");
+    svg.append("path")
+      .attr("d", aline(upavgs))
+      .style("fill", "none")
+      .style("stroke", "red");
+    svg.append("path")
+      .attr("d", aline(downavgs))
+      .style("fill", "none")
+      .style("stroke", "blue");
 
 }
 function Text(filbus){
@@ -79,6 +86,7 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 //					if(((elo.Lat-aro[n+1].Lat)/(elo.Lon-aro[n+1].Lon)).toFixed(0) == ((elo.Lat-ele.lat)/(elo.Lon-ele.lon)).toFixed(0)){
 						ele.check = "a"
 						ele.tot = (elo.tot + Math.sqrt((Math.pow(Math.abs(elo.Lat - ele.lat), 2))+(Math.pow(Math.abs(elo.Lon - ele.lon), 2))))*100/aro[aro.length-1].tot
+						ele.totless = ele.tot.toFixed(0)
 //					}
 				}
 
@@ -87,15 +95,22 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 			})
 		})
 		filbus = filbus.filter((d)=>{return d.tot > 0})
+		var upavgs = [];
+		var downavgs = [];
+		for(i=1;i<=100; i++){
+  			var temp = filbus.filter((d) => {return d.totless == i && 0 <= d.deviation;})
+  			temp = temp.map((d) => {return d.deviation})
+  			var tomp = filbus.filter((d) => {return d.totless == i && d.deviation <= 0;})
+  			tomp = tomp.map((d) => {return d.deviation})
+  			var entry = {mean: d3.median(temp), where: i}
+  			if (entry.mean != undefined){upavgs.push(entry)}
+  			entry = {mean: d3.median(tomp), where: i}
+  			if (entry.mean != undefined){downavgs.push(entry)}
+ 		}
 
-		var count = 0
-		filbus.forEach((ele) =>{
-			if(ele.check == "a"){count = count + 1}
-		})
-		console.log(count)
+ 		console.log(upavgs)
 		console.log(filbus)
-		console.log(filbus.filter((d) => {return d.deviation < -25 & d.tot > 1}))
-		Plot(filbus)
+		Plot(filbus, upavgs, downavgs)
 	})
 
 };
