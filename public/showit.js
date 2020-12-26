@@ -191,6 +191,7 @@ function RunStuff(line, data) {
 		PrepData(dat, 0, line)
 		PrepData(dat, 1, line)
 	}
-function ShowIt{
-d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff.bind(this, document.querySelector('#selection').value));
+
+function ShowIt(){
+	d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff.bind(this, document.querySelector('#selection').value));
 }

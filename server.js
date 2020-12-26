@@ -35,8 +35,7 @@ app.get("/api/route/:r", (req, res) => { // just passes it along
 });
 
 app.get("/api/routes", (req, res) => { // just passes it along
-  const r = req.params.r
-  imp1 = 'https://api.wmata.com/Bus.svc/json/jRoutes&api_key='+key
+  imp1 = 'https://api.wmata.com/Bus.svc/json/jRoutes?api_key='+key
   request(imp1).pipe(res)
 });
 
