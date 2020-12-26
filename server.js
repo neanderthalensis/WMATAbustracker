@@ -28,9 +28,11 @@ app.listen(port, () => console.log(`Dat port is ${port}!`));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get("/api/route", (req, res) => { // just passes it along
-  const { line } = req.params;
-  imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=C4&api_key='+key
+app.get("/api/route/:r", (req, res) => { // just passes it along
+  //const { line } = req.params;
+  const r = req.params.r
+  console.log(r)
+  imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=' + r + '&api_key='+key
   request(imp1).pipe(res)
 });
 

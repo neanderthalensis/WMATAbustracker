@@ -6,48 +6,72 @@ function WhichTop(filbus){
 	}
 }
 
-function Plot(filbus, upavgs, downavgs){
+
+function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasource.com/developers/javascript
+	if ((lat1 == lat2) && (lon1 == lon2)) {
+		return 0;
+	}
+	else {
+		var radlat1 = Math.PI * lat1/180;
+		var radlat2 = Math.PI * lat2/180;
+		var theta = lon1-lon2;
+		var radtheta = Math.PI * theta/180;
+		var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+		if (dist > 1) {
+			dist = 1;
+		}
+		dist = Math.acos(dist);
+		dist = dist * 180/Math.PI;
+		dist = dist * 60 * 1.1515;
+		if (unit=="K") { dist = dist * 1.609344 }
+		if (unit=="N") { dist = dist * 0.8684 }
+		return dist;
+	}
+}
+
+function IniPlot(filbus, upavgs, downavgs, justnow){
 	var margin = {top: 10, right: 30, bottom: 30, left: 60},
     	width = 0.9*screen.width - margin.left - margin.right,
     	height = 400 - margin.top - margin.bottom;
-    var svg = d3.select("#plothere")
+    var svg = d3.select("#plothere" + filbus[0].directionnum)
   		.append("svg")
     	.attr("width", width + margin.left + margin.right)
     	.attr("height", height + margin.top + margin.bottom)
   		.append("g")
+		.attr("id", "p"+filbus[0].directionnum)
     	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var xs = d3.scaleLinear()
     	.domain([0, 100])
     	.range([ 0, width ]);
     svg.append("g")
-      .attr("transform", "translate(0," + height*0.5 + ")")
-      .call(d3.axisTop(xs));
+        .attr("transform", "translate(0," + height*0.5 + ")")
+        .call(d3.axisTop(xs));
     var ys = d3.scaleLinear()
-      .domain([WhichTop(filbus).min, WhichTop(filbus).max])
-      .range([ height, 0 ]);
+        .domain([WhichTop(filbus).min, WhichTop(filbus).max])
+        .range([ height, 0 ]);
     svg.append("g")
-      .call(d3.axisLeft(ys));
+        .call(d3.axisLeft(ys));
     var aline = d3.line()
     	.x( (d) => {return xs(d.where);})
     	.y( (d) => {return ys(d.mean);});
- 	// svg.append('g')
-	 //   .selectAll("dot")
-  //      .data(upavgs)
-  //      .enter()
-  //      .append("circle")
-  //      .attr("cx", function (d) { return xs(d.where)} )
-  //      .attr("cy", function (d) { return ys(d.mean)})
-  //      .attr("r", 1.5)
-  //      .style("fill", "#69b3a2");
-    svg.append("path")
-      .attr("d", aline(upavgs))
-      .style("fill", "none")
-      .style("stroke", "red");
-    svg.append("path")
-      .attr("d", aline(downavgs))
-      .style("fill", "none")
-      .style("stroke", "blue");
 
+   svg.append('g')
+       .selectAll("dot")
+       .data(justnow)
+       .enter()
+       .append("circle")
+       .attr("cx", function (d) { return xs(d.totless)} )
+       .attr("cy", function (d) { return ys(d.deviation)})
+       .attr("r", 5)
+       .style("fill", "#green");
+    svg.append("path")
+        .attr("d", aline(upavgs))
+        .style("fill", "none")
+        .style("stroke", "red");
+    svg.append("path")
+        .attr("d", aline(downavgs))
+        .style("fill", "none")
+        .style("stroke", "blue");
 }
 function Text(filbus){
 	var here = d3.select("body")
@@ -61,56 +85,111 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 	d3.json('https://wmatabustracker.herokuapp.com/api/route', function(routedata){
 		var filbus = busdata.filter((d) => {return d.directionnum == dir})
 		var filroute;
-		if (dir == 0){filroute = routedata.Direction0.Shape} //bad 
-		else{filroute = routedata.Direction1.Shape}
+		var filstops;
+		if (dir == 0){
+			filroute = routedata.Direction0.Shape
+			filstops = routedata.Direction0.Stops
+		} //bad 
+		else{
+			filroute = routedata.Direction1.Shape
+			filstops = routedata.Direction1.Stops
+		}
 		for (i=0; i<filroute.length; i++) {
 			if(i == 0){
 				filroute[i].tot = 0
 			}
 			else{
-				filroute[i].tot = filroute[i-1].tot + (Math.abs(filroute[i].Lat - filroute[i-1].Lat) + Math.abs(filroute[i].Lon - filroute[i-1].Lon))
+				filroute[i].tot = filroute[i-1].tot + Distance(filroute[i].Lat, filroute[i].Lon, filroute[i-1].Lat, filroute[i-1].Lon, "K")
 			}
 		}
 		filroute.forEach((ele, i, arr) => {
+			ele.Latup = (ele.Lat+(4*10**-4)).toFixed(4)
+			ele.Latdown = (ele.Lat-(4*10**-4)).toFixed(4)
+			ele.Lonup = (ele.Lon+(4*10**-4)).toFixed(4)
+			ele.Londown = (ele.Lon-(4*10**-4)).toFixed(4)
+
 			if(i == 0){
 				ele.tot = 0
 			}
 			else{
-				ele.tot = arr[i-1].tot + (Math.abs(ele.Lat - arr[i-1].Lat) + Math.abs(ele.Lon - arr[i-1].Lon))
+				//ele.tot = arr[i-1].tot + (Math.abs(ele.Lat - arr[i-1].Lat) + Math.abs(ele.Lon - arr[i-1].Lon))
+				ele.tot = arr[i-1].tot + Distance(ele.Lat, ele.Lon, arr[i-1].Lat, arr[i-1].Lon, "K")
 			}
 		})
-		filbus.forEach((ele, i, arr) => {
+
+		console.log(filroute)
+		filstops.forEach((ele, i, arr) => {
 			filroute.forEach((elo, n, aro) => {
-				if (n < (aro.length-1)){ //fit it on the route
-				if ((ele.lat >= elo.Lat & ele.lon <= elo.Lon & ele.lat <= aro[n+1].Lat & ele.lon >= aro[n+1].Lon) || (ele.lat <= elo.Lat & ele.lon <= elo.Lon & ele.lat >= aro[n+1].Lat & ele.lon >= aro[n+1].Lon) || (ele.lat <= elo.Lat & ele.lon >= elo.Lon & ele.lat >= aro[n+1].Lat & ele.lon <= aro[n+1].Lon) || (ele.lat >= elo.Lat & ele.lon >= elo.Lon & ele.lat <= aro[n+1].Lat & ele.lon <= aro[n+1].Lon)){
-//					if(((elo.Lat-aro[n+1].Lat)/(elo.Lon-aro[n+1].Lon)).toFixed(0) == ((elo.Lat-ele.lat)/(elo.Lon-ele.lon)).toFixed(0)){
-						ele.check = "a"
-						ele.tot = (elo.tot + Math.sqrt((Math.pow(Math.abs(elo.Lat - ele.lat), 2))+(Math.pow(Math.abs(elo.Lon - ele.lon), 2))))*100/aro[aro.length-1].tot
-						ele.totless = ele.tot.toFixed(0)
-//					}
-				}
-
-			}
-
-			})
+			if (n+1 < filroute.length) {
+			if ((ele.Lat >= filroute[n].Latdown & ele.Lon <= filroute[n].Lonup & ele.Lat <= filroute[n+1].Latup & ele.Lon >= filroute[n+1].Londown) || (ele.Lat <= filroute[n].Latup & ele.Lon <= filroute[n].Lonup & ele.Lat >= filroute[n+1].Latdown & ele.Lon >= filroute[n+1].Londown) || (ele.Lat <= filroute[n].Latup & ele.Lon >= filroute[n].Londown & ele.Lat >= filroute[n+1].Latdown & ele.Lon <= filroute[n+1].Lonup) || (ele.Lat >= filroute[n].Latdown & ele.Lon >= filroute[n].Londown & ele.Lat <= filroute[n+1].Latup & ele.Lon <= filroute[n+1].Lonup)){
+				ele.tot = elo.tot + Distance(ele.Lat, ele.Lon, ele.Lat, ele.Lon, "K")
+			}}})		
 		})
+
+		var trips = [... new Set(filbus.map((d)=>{return d.tripid}))]
+
+		var stations = filstops.filter((d) => {return d.Name.toUpperCase().includes("STATION") || d.Name.toUpperCase().includes("TRANSIT CENTER") || d.Name.toUpperCase().includes("TRANSIT CTR")}) 
+		trips.forEach((olo, o) => {
+			var workthis = filbus.filter((d)=> {return d.tripid == olo})
+			workthis.sort((a, b)=>{return new Date(a.ts).getTime()-new Date(b.ts).getTime()})
+			workthis.forEach((ele, i, arr) =>{
+				var n = 0
+				stations.forEach((p, t)=>{
+					if(ele.lat < p.Lat + (3*10**-3) && ele.lat > p.Lat + (3*10**-3) && ele.lon < p.Lon + (3*10**-3) && ele.lon > p.Lon - (3*10**-3)){
+						stat = t
+					}
+					else{stat = -1}
+				})
+				if(stat != -1) {
+					ele.check = "b"
+					ele.tot = stations[stat].tot
+				}
+				else { 
+					while(n<filroute.length-1){
+						if ((ele.lat >= filroute[n].Latdown & ele.lon <= filroute[n].Lonup & ele.lat <= filroute[n+1].Latup & ele.lon >= filroute[n+1].Londown) || (ele.lat <= filroute[n].Latup & ele.lon <= filroute[n].Lonup & ele.lat >= filroute[n+1].Latdown & ele.lon >= filroute[n+1].Londown) || (ele.lat <= filroute[n].Latup & ele.lon >= filroute[n].Londown & ele.lat >= filroute[n+1].Latdown & ele.lon <= filroute[n+1].Lonup) || (ele.lat >= filroute[n].Latdown & ele.lon >= filroute[n].Londown & ele.lat <= filroute[n+1].Latup & ele.lon <= filroute[n+1].Lonup)){
+							//ele.tot = (filroute[n].tot + Math.sqrt((Math.pow(Math.abs(filroute[n].Lat - ele.lat), 2))+(Math.pow(Math.abs(filroute[n].Lon - ele.lon), 2))))*100/filroute[filroute.length-1].tot
+							ele.tot = filroute[n].tot + Distance(ele.lat, ele.lon, filroute[n].Lat, filroute[n].Lon, "K")
+							ele.totless = ((ele.tot/filroute[filroute.length-1].tot)*100).toFixed(0)
+							place = n
+							ele.check = "a"
+						}
+					n += 1
+				 }}
+			})
+
+		})
+
+
+
+		exe = filbus.filter((d)=>{return !(d.chock == "b")})
+
+
+		console.log(filbus.length)
 		filbus = filbus.filter((d)=>{return d.tot > 0})
+		console.log(filbus.length)
 		var upavgs = [];
 		var downavgs = [];
 		for(i=1;i<=100; i++){
   			var temp = filbus.filter((d) => {return d.totless == i && 0 <= d.deviation;})
-  			temp = temp.map((d) => {return d.deviation})
-  			var tomp = filbus.filter((d) => {return d.totless == i && d.deviation <= 0;})
-  			tomp = tomp.map((d) => {return d.deviation})
-  			var entry = {mean: d3.median(temp), where: i}
-  			if (entry.mean != undefined){upavgs.push(entry)}
-  			entry = {mean: d3.median(tomp), where: i}
+			var tripavgs = [];
+  				trips.forEach((ele) => {
+  					tripavgs.push((d3.mean(temp.filter((d) => {return d.tripid == ele}).map((d) => {return d.deviation}))))
+  				})
+  			var entry = {mean: d3.mean(tripavgs), where: i}
+  			if(entry.mean != undefined){upavgs.push(entry)}
+  			
+  			temp = filbus.filter((d) => {return d.totless == i && d.deviation <= 0;})
+			var tripavgs = [];
+  				trips.forEach((ele) => {
+  					tripavgs.push((d3.mean(temp.filter((d) => {return d.tripid == ele}).map((d) => {return d.deviation}))))
+  				})
+  			var entry = {mean: d3.mean(tripavgs), where: i}
   			if (entry.mean != undefined){downavgs.push(entry)}
- 		}
 
+ 		}
  		console.log(upavgs)
-		console.log(filbus)
-		Plot(filbus, upavgs, downavgs)
+ 		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
+		IniPlot(filbus, upavgs, downavgs, justnow)
 	})
 
 };
