@@ -32,7 +32,7 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 function IniPlot(filbus, upavgs, downavgs, justnow){
 	var margin = {top: 10, right: 30, bottom: 30, left: 60},
     	width = 0.9*screen.width - margin.left - margin.right,
-    	height = 400 - margin.top - margin.bottom;
+    	height = 300 - margin.top - margin.bottom;
     var svg = d3.select("#plothere" + filbus[0].directionnum)
   		.append("svg")
     	.attr("width", width + margin.left + margin.right)
@@ -81,8 +81,8 @@ function Text(filbus){
 
 }
 
-function PrepData(busdata, dir){ //determines position of the bus and assigns value
-	d3.json('https://wmatabustracker.herokuapp.com/api/route', function(routedata){
+function PrepData(busdata, dir, r){ //determines position of the bus and assigns value
+	d3.json('https://wmatabustracker.herokuapp.com/api/route/'+r, function(routedata){
 		var filbus = busdata.filter((d) => {return d.directionnum == dir})
 		var filroute;
 		var filstops;
@@ -141,7 +141,6 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 					else{stat = -1}
 				})
 				if(stat != -1) {
-					ele.check = "b"
 					ele.tot = stations[stat].tot
 				}
 				else { 
@@ -151,7 +150,6 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 							ele.tot = filroute[n].tot + Distance(ele.lat, ele.lon, filroute[n].Lat, filroute[n].Lon, "K")
 							ele.totless = ((ele.tot/filroute[filroute.length-1].tot)*100).toFixed(0)
 							place = n
-							ele.check = "a"
 						}
 					n += 1
 				 }}
@@ -160,13 +158,7 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
 		})
 
 
-
-		exe = filbus.filter((d)=>{return !(d.chock == "b")})
-
-
-		console.log(filbus.length)
 		filbus = filbus.filter((d)=>{return d.tot > 0})
-		console.log(filbus.length)
 		var upavgs = [];
 		var downavgs = [];
 		for(i=1;i<=100; i++){
@@ -187,16 +179,18 @@ function PrepData(busdata, dir){ //determines position of the bus and assigns va
   			if (entry.mean != undefined){downavgs.push(entry)}
 
  		}
- 		console.log(upavgs)
  		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
 		IniPlot(filbus, upavgs, downavgs, justnow)
 	})
 
 };
 
-function RunStuff(data) {
-		PrepData(data, 0)
-		PrepData(data, 1)
-	}
+function RunStuff(line, data) {
+		dat = data.filter((d) => {return d.routeid == line})
 
-d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff);
+		PrepData(dat, 0, line)
+		PrepData(dat, 1, line)
+	}
+function ShowIt{
+d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff.bind(this, document.querySelector('#selection').value));
+}

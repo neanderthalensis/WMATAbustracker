@@ -2,27 +2,14 @@ body{
 	margin: auto;
 	font-family: sans-serif;
 }
-.top{
- 	background-color: #bfbfbf;
- 	height:40pt;
+.menu{
+	background-color: "grey";
+	border-style: solid;
+	border-color: 'black';
+	width: 75%;
+	margin: auto;
 }
-.topmenu:link, .topmenu:visited {
-	float:left;
-	background: #C8102E; 
-	color: #bfbfbf;
-	height: 40pt;
-	line-height: 40pt;
-	width: 100pt;
-	text-align: center;
-	text-decoration:none; 
-  
-}
-.topmenu:hover, .topmenu:active {
-	background: #bfbfbf;
-	color: #C8102E;
-}
-#plothere{
+.plothere{
 	width: 98%;
-	margin-left: auto;
-	margin-right: auto;
+	margin: auto;
 }
