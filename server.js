@@ -44,10 +44,9 @@ app.get("/api/bus", (req, res) => { // gets stuf from database
   const { line } = req.params;
   client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS Deviation, json_array_elements(json->'BusPositions')->'Lat' AS Lat, json_array_elements(json->'BusPositions')->'Lon' AS Lon, json_array_elements(json->'BusPositions')->'RouteID' AS RouteID, json_array_elements(json->'BusPositions')->'DirectionNum' AS DirectionNum, json_array_elements(json->'BusPositions')->'TripID' AS TripID FROM bus;",
     (error, results) => {
-      if (error) {
-        throw error;
-      }
-      res.status(200).json(results.rows);
+      res.status(200).json(
+        results.rows.filter((d) => {return d.routeid == line})
+        );
     }
   );
 });

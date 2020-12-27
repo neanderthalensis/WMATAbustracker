@@ -186,12 +186,11 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 };
 
 function RunStuff(line, data) {
-		dat = data.filter((d) => {return d.routeid == line})
-
 		PrepData(dat, 0, line)
 		PrepData(dat, 1, line)
 	}
 
 function ShowIt(){
-	d3.json('https://wmatabustracker.herokuapp.com/api/bus', RunStuff.bind(this, document.querySelector('#selection').value));
+	var line = document.querySelector('#selection').value
+	d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line, RunStuff.bind(this, line);
 }
