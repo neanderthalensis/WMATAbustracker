@@ -3,7 +3,7 @@
 <html>
 <head>
 
-<title>WMATA bus tracker</title>
+<title>Metrobus Tracker</title>
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=0.7">
@@ -17,10 +17,17 @@
 
 <body>
 <div class="menu">
-Options: <br><br>
-<input id = "selection">
-<button id = "sub" onclick="ShowIt();"> Show me the plot! </button>
-</div>	
+Please select a line:
+<input class = "sel" id = "selection">
+and timeframe:
+<select class="sel">
+	<option value="1d">24h</option>
+	<option value="2d">48h</option>
+</select>
+<button id = "sub" onclick="ShowIt()"> Plot It! </button>
+<img id="loading" src="loading.gif"/>
+</div>
+<div class="line"></div>
 <div class = "plothere" id = "plothere0"></div>
 <div class = "plothere" id = "plothere1"></div>
 </body>

@@ -1,9 +1,15 @@
-function WhichTop(filbus){
-	var max = Math.max(Math.abs(d3.min(filbus, function(d) { return d.deviation; })), Math.abs(d3.max(filbus, function(d) { return d.deviation; })))
+function WhichTop(upavgs, downavgs){
+	var max = Math.max(Math.abs(d3.min(downavgs, function(d) {return d.mean})), Math.abs(d3.max(upavgs, function(d) { return d.mean; })))
+	max = Math.max([20, max])
 	return{
 		max: max,
-		min: max*-1
+		min: -1*max
 	}
+}
+
+function toggle(a, b){
+	document.getElementById("sub").style["display"]=a
+	document.getElementById("loading").style.display=b
 }
 
 
@@ -29,34 +35,27 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 	}
 }
 
-function IniPlot(filbus, upavgs, downavgs, justnow){
+function SubPlot(filbus, upavgs, downavgs, justnow){
 	var margin = {top: 10, right: 30, bottom: 30, left: 60},
     	width = 0.9*screen.width - margin.left - margin.right,
     	height = 300 - margin.top - margin.bottom;
-    var svg = d3.select("#plothere" + filbus[0].directionnum)
-  		.append("svg")
-    	.attr("width", width + margin.left + margin.right)
-    	.attr("height", height + margin.top + margin.bottom)
-  		.append("g")
-		.attr("id", "p"+filbus[0].directionnum)
-    	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var svg = d3.select("#p" + filbus[0].directionnum)
     var xs = d3.scaleLinear()
     	.domain([0, 100])
     	.range([ 0, width ]);
     svg.append("g")
         .attr("transform", "translate(0," + height*0.5 + ")")
-        .call(d3.axisTop(xs));
     var ys = d3.scaleLinear()
-        .domain([WhichTop(filbus).min, WhichTop(filbus).max])
-        .range([ height, 0 ]);
-    svg.append("g")
+        .domain([WhichTop(upavgs, downavgs).min, WhichTop(upavgs, downavgs).max])
+        .range([ height, 0 ])
+    svg.selectAll(".yaxis")
         .call(d3.axisLeft(ys));
     var aline = d3.line()
     	.x( (d) => {return xs(d.where);})
     	.y( (d) => {return ys(d.mean);});
-
-   svg.append('g')
-       .selectAll("dot")
+   svg.selectAll(".circles")
+   	   .selectAll("*")
+   	   .remove()
        .data(justnow)
        .enter()
        .append("circle")
@@ -64,11 +63,11 @@ function IniPlot(filbus, upavgs, downavgs, justnow){
        .attr("cy", function (d) { return ys(d.deviation)})
        .attr("r", 5)
        .style("fill", "#green");
-    svg.append("path")
+    svg.selectAll(".upline")
         .attr("d", aline(upavgs))
         .style("fill", "none")
         .style("stroke", "red");
-    svg.append("path")
+    svg.selectAll(".downline")
         .attr("d", aline(downavgs))
         .style("fill", "none")
         .style("stroke", "blue");
@@ -117,7 +116,6 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 			}
 		})
 
-		console.log(filroute)
 		filstops.forEach((ele, i, arr) => {
 			filroute.forEach((elo, n, aro) => {
 			if (n+1 < filroute.length) {
@@ -134,11 +132,11 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 			workthis.sort((a, b)=>{return new Date(a.ts).getTime()-new Date(b.ts).getTime()})
 			workthis.forEach((ele, i, arr) =>{
 				var n = 0
+				var stat = -1;
 				stations.forEach((p, t)=>{
 					if(ele.lat < p.Lat + (3*10**-3) && ele.lat > p.Lat + (3*10**-3) && ele.lon < p.Lon + (3*10**-3) && ele.lon > p.Lon - (3*10**-3)){
 						stat = t
 					}
-					else{stat = -1}
 				})
 				if(stat != -1) {
 					ele.tot = stations[stat].tot
@@ -180,17 +178,32 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 
  		}
  		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
-		IniPlot(filbus, upavgs, downavgs, justnow)
+ 		 console.log(upavgs)
+		SubPlot(filbus, upavgs, downavgs, justnow)
+		return new Promise((res) => {res('done')})
 	})
 
 };
 
-function RunStuff(line, data) {
-		PrepData(dat, 0, line)
-		PrepData(dat, 1, line)
+async function RunStuff(line, data) {
+		console.log(data)
+		if (data.length == 0){console.log("nothing could be found")}
+		else{
+			await Promise.all([
+			PrepData(data, 0, line),
+			PrepData(data, 1, line)
+			])
+			console.log("Sorry it takes a while")
+		}
+		toggle("inline", "none")
 	}
 
+
 function ShowIt(){
-	var line = document.querySelector('#selection').value
-	d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line, RunStuff.bind(this, line);
+
+	toggle("none", "inline")
+
+	var line = document.querySelector('#selection').value.toUpperCase()
+	d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line, RunStuff.bind(this, line))
+
 }

@@ -1,15 +1,47 @@
 body{
 	margin: auto;
-	font-family: sans-serif;
+	font-family: Arial;
 }
 .menu{
-	background-color: "grey";
-	border-style: solid;
+	padding-top: 50px;
+	font-weight: bold;
+	font-size: 25px;
 	border-color: 'black';
-	width: 75%;
+	width: 80%;
 	margin: auto;
+	text-align: center;
+}
+.sel{
+	height: 30px;
+	width: 200px;
+	font-size: 20px;
+	border: none;
+	border-bottom: 2px dotted black;
+}
+#sub{
+	height: 35px;
+	width:80px;
+	font-size: 20px;
+	color: white;
+	background-color: black;
+	border-style: none;
+	border-radius: 8px;
+	display: inline;
+}
+#loading{
+	margin-left: 29px;
+	height:22px;
+	display: none;
+	border-style: 1px solid black;
 }
 .plothere{
-	width: 98%;
+	width: 80%;
 	margin: auto;
+	padding-top: 30px;
+}
+.line{
+	border-bottom: 3px dashed black;
+	width: 80%;
+	margin: auto;
+	padding-top: 50px;
 }
