@@ -44,8 +44,8 @@ app.get("/api/bus/:r", (req, res) => { // gets stuf from database
   const r = req.params.r
   client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS Deviation, json_array_elements(json->'BusPositions')->'Lat' AS Lat, json_array_elements(json->'BusPositions')->'Lon' AS Lon, json_array_elements(json->'BusPositions')->'RouteID' AS RouteID, json_array_elements(json->'BusPositions')->'DirectionNum' AS DirectionNum, json_array_elements(json->'BusPositions')->'TripID' AS TripID FROM bus;",
     (error, results) => {
+      console.log("hi")
       res.status(200).json(
-        console.log("hi")
         results.rows.filter((d) => {return d.routeid == r})
         );
     }
