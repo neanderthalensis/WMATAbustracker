@@ -40,15 +40,10 @@ app.get("/api/routes", (req, res) => { // just passes it along
 });
 
 
-app.get("/api/bus/:r", (req, res) => { // gets stuff from database
+app.get("/api/bus/:r", async (req, res) => { // gets stuff from database
   const r = req.params.r
   var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=$1;"
-  client.query(imp1, [r], (error, result) => {
-    if(error){throw error}
-      res.status(200).json(
-        results.rows
-      );
-    }
-  );
+  var hey = await client.query(imp1, [r])
+  res.status(200).json(hey.rows)
 });
 

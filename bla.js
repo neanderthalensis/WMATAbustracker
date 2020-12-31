@@ -5,9 +5,11 @@ const client = new Client({ //connects to the database
 	ssl: {rejectUnauthorized: false}
 });
 
-
+hola = async () => {
 const r = "C4"
 var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=$1;"
-client.query(imp1, [r], (error, result) => {
-    console.log(result.rows)
-})
+var hi =  client.query(imp1, [r])
+console.log(hi.rows)
+console.log("dadsdfgsdfg")
+}
+hola()
