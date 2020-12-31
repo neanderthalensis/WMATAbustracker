@@ -30,23 +30,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/api/route/:r", (req, res) => { // just passes it along
   const r = req.params.r
-  var imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=' + r + '&api_key='+key
+  imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=' + r + '&api_key='+key
   request(imp1).pipe(res)
 });
 
 app.get("/api/routes", (req, res) => { // just passes it along
-  var imp1 = 'https://api.wmata.com/Bus.svc/json/jRoutes?api_key='+key
+  imp1 = 'https://api.wmata.com/Bus.svc/json/jRoutes?api_key='+key
   request(imp1).pipe(res)
 });
 
 
 app.get("/api/bus/:r", (req, res) => { // gets stuf from database
   const r = req.params.r
-  console.log(r)
-  var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=" + "C4" + ";"
-  client.query(imp1, (error, results) => {
+  client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS Deviation, json_array_elements(json->'BusPositions')->'Lat' AS Lat, json_array_elements(json->'BusPositions')->'Lon' AS Lon, json_array_elements(json->'BusPositions')->'RouteID' AS RouteID, json_array_elements(json->'BusPositions')->'DirectionNum' AS DirectionNum, json_array_elements(json->'BusPositions')->'TripID' AS TripID FROM bus;",
+    (error, results) => {
       res.status(200).json(
-        results.rows
+        results.rows.filter((d) => {return d.routeid == r})
         );
     }
   );
