@@ -36,7 +36,6 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 }
 
 function SubPlot(filbus, upavgs, downavgs, justnow){
-	console.log(justnow)
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
     	height = 300 - margin.top - margin.bottom;
@@ -84,9 +83,13 @@ function Text(filbus){
 
 }
 
-function PrepData(busdata, dir, r){ //determines position of the bus and assigns value
-	d3.json('https://wmatabustracker.herokuapp.com/api/route/'+r, function(routedata){
-		var filbus = busdata.filter((d) => {return d.directionnum == dir})
+async function PrepData(busdata, dir, r){ //determines position of the bus and assigns value
+	var filbus;
+	var upavgs = [];
+	var downavgs = [];
+	var justnow;
+	await d3.json('https://wmatabustracker.herokuapp.com/api/route/'+r).then((routedata) => {
+		filbus = busdata.filter((d) => {return d.directionnum == dir})
 		var filroute;
 		var filstops;
 		if (dir == 0){
@@ -161,8 +164,6 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 
 
 		filbus = filbus.filter((d)=>{return d.tot > 0})
-		var upavgs = [];
-		var downavgs = [];
 		for(i=1;i<=100; i++){
   			var temp = filbus.filter((d) => {return d.totless == i && 0 <= d.deviation;})
 			var tripavgs = [];
@@ -181,34 +182,60 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
   			if (entry.mean != undefined){downavgs.push(entry)}
 
  		}
- 		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
-		SubPlot(filbus, upavgs, downavgs, justnow)
-		// return new Promise((res) => {res('done')})
+ 		 justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
+		//SubPlot(filbus, upavgs, downavgs, justnow)
+		console.log("hey")
 	})
-
+	console.log("hi")
+	return{
+	 	filbus: filbus,
+	 	upavgs: upavgs, 
+	 	downavgs: downavgs,
+	 	justnow: justnow
+	}
 };
 
-function RunStuff(line, data) {
+
+
+async function RunStuff(data, line) {
 		console.log(data)
 		if (data.length == 0){
 			console.log("nothing could be found")
 		}
 		else{
-			//await Promise.all([
-			PrepData(data, 0, line)//,
-			PrepData(data, 1, line)
-			//])
+			var dat = await Promise.all([
+				PrepData(data, 0, line),
+				PrepData(data, 1, line)
+			])
+			console.log(dat)
+			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow)
+			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow)
+
 			console.log("Sorry it takes a while")
 		}
-		toggle("inline", "none")
 	}
 
 
-function ShowIt(){
+async function ShowIt(){
 
 	toggle("none", "inline")
 
 	var line = document.querySelector('#selection').value.toUpperCase()
-	d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line, RunStuff.bind(this, line))
+	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line)//.then((data) => RunStuff(data, line))
+	if (data.length == 0){
+		console.log("nothing could be found")
+	}
+	else{
+		var dat = await Promise.all([
+			PrepData(data, 0, line),
+			PrepData(data, 1, line)
+		])
+		console.log(dat)
+		await Promise.all([
+			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow),
+			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow)
+		])
+	}	
+	toggle("inline", "none")
 
 }
