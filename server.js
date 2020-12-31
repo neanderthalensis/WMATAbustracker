@@ -36,7 +36,11 @@ app.get("/api/route/:r", (req, res) => { // just passes it along
 
 app.get("/api/routes", (req, res) => { // just passes it along
   var imp1 = 'https://api.wmata.com/Bus.svc/json/jRoutes?api_key='+key
-  request(imp1).pipe(res)
+  request.get(imp1, {json:true},(err, res) => {
+    if (err){request('https://api.wmata.com/Bus.svc/json/jRoutes?Date=2020-12-30&api_key='+key).pipe(res)}
+    else{.pipe(res)}
+  })
+  
 });
 
 

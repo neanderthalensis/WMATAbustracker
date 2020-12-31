@@ -183,7 +183,7 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
  		}
  		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
 		SubPlot(filbus, upavgs, downavgs, justnow)
-		return new Promise((res) => {res('done')})
+		// return new Promise((res) => {res('done')})
 	})
 
 };
