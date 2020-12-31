@@ -43,7 +43,7 @@ app.get("/api/routes", (req, res) => { // just passes it along
 app.get("/api/bus/:r", (req, res) => { // gets stuf from database
   const r = req.params.r
   console.log(r)
-  var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=" + r + ";"
+  var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=" + "C4" + ";"
   client.query(imp1, (error, results) => {
       res.status(200).json(
         results.rows
