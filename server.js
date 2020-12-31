@@ -42,11 +42,10 @@ app.get("/api/routes", (req, res) => { // just passes it along
 
 app.get("/api/bus/:r", (req, res) => { // gets stuf from database
   const r = req.params.r
-  client.query("SELECT ts,json_array_elements(json->'BusPositions')->'Deviation' AS Deviation, json_array_elements(json->'BusPositions')->'Lat' AS Lat, json_array_elements(json->'BusPositions')->'Lon' AS Lon, json_array_elements(json->'BusPositions')->'RouteID' AS RouteID, json_array_elements(json->'BusPositions')->'DirectionNum' AS DirectionNum, json_array_elements(json->'BusPositions')->'TripID' AS TripID FROM bus;",
+  client.query("SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'="+r+";",
     (error, results) => {
-      console.log("hi")
       res.status(200).json(
-        results.rows.filter((d) => {return d.routeid == r})
+        results.rows
         );
     }
   );

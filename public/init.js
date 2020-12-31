@@ -25,8 +25,24 @@ function IniPlot(dir){
     	.attr("class", "upline");
     svg.append("path")
     	.attr("class", "downline");
-    svg.append("g")
-        .attr("class", "circles")
+}
+
+function Legend(){
+    var margin = {top: 10, right: 30, bottom: 0, left: 30},
+        width = 0.8*screen.width - margin.left - margin.right,
+        height = 30 - margin.top - margin.bottom;
+    var svg = d3.select("#legend")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    svg.append("circle")
+        .attr("cx",150)
+        .attr("cy",10)
+        .attr("r", 5)
+        .style("fill", "black")
+
 }
 
 
@@ -45,6 +61,7 @@ $(document).ready( () => {
 	})
 	sel.setAttribute('list', 'buses')
 	sel.appendChild(list)
+    Legend()
 	IniPlot(0)
 	IniPlot(1)
 

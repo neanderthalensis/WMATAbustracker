@@ -1,6 +1,6 @@
 function WhichTop(upavgs, downavgs){
 	var max = Math.max(Math.abs(d3.min(downavgs, function(d) {return d.mean})), Math.abs(d3.max(upavgs, function(d) { return d.mean; })))
-	max = Math.max([20, max])
+	if(!(max > 15)){max = 15}
 	return{
 		max: max,
 		min: -1*max
@@ -36,8 +36,8 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 }
 
 function SubPlot(filbus, upavgs, downavgs, justnow){
-	var margin = {top: 10, right: 30, bottom: 30, left: 60},
-    	width = 0.9*screen.width - margin.left - margin.right,
+	var margin = {top: 10, right: 30, bottom: 30, left: 30},
+    	width = 0.8*screen.width - margin.left - margin.right,
     	height = 300 - margin.top - margin.bottom;
     var svg = d3.select("#p" + filbus[0].directionnum)
     var xs = d3.scaleLinear()
@@ -51,24 +51,27 @@ function SubPlot(filbus, upavgs, downavgs, justnow){
     svg.selectAll(".yaxis")
         .call(d3.axisLeft(ys));
     var aline = d3.line()
-    	.x( (d) => {return xs(d.where);})
-    	.y( (d) => {return ys(d.mean);});
-   svg.selectAll(".circles")
-   	   .selectAll("*")
-   	   .remove()
+    	.x((d) => {return xs(d.where);})
+    	.y((d) => {return ys(d.mean);});
+   svg.selectAll(".pts")
+       .remove()
+   svg.append("g")
+   	   .selectAll("dot")
        .data(justnow)
        .enter()
        .append("circle")
        .attr("cx", function (d) { return xs(d.totless)} )
        .attr("cy", function (d) { return ys(d.deviation)})
        .attr("r", 5)
-       .style("fill", "#green");
+       .attr("class", "pts")
     svg.selectAll(".upline")
         .attr("d", aline(upavgs))
+        .style("stroke-width", "2px")
         .style("fill", "none")
         .style("stroke", "red");
     svg.selectAll(".downline")
         .attr("d", aline(downavgs))
+        .style("stroke-width", "2px")
         .style("fill", "none")
         .style("stroke", "blue");
 }
@@ -178,21 +181,22 @@ function PrepData(busdata, dir, r){ //determines position of the bus and assigns
 
  		}
  		 var justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
- 		 console.log(upavgs)
 		SubPlot(filbus, upavgs, downavgs, justnow)
 		return new Promise((res) => {res('done')})
 	})
 
 };
 
-async function RunStuff(line, data) {
+function RunStuff(line, data) {
 		console.log(data)
-		if (data.length == 0){console.log("nothing could be found")}
+		if (data.length == 0){
+			console.log("nothing could be found")
+		}
 		else{
-			await Promise.all([
-			PrepData(data, 0, line),
+			//await Promise.all([
+			PrepData(data, 0, line)//,
 			PrepData(data, 1, line)
-			])
+			//])
 			console.log("Sorry it takes a while")
 		}
 		toggle("inline", "none")
