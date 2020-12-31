@@ -36,6 +36,7 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 }
 
 function SubPlot(filbus, upavgs, downavgs, justnow){
+	console.log(justnow)
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
     	height = 300 - margin.top - margin.bottom;
