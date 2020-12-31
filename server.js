@@ -45,10 +45,9 @@ app.get("/api/bus/:r", (req, res) => { // gets stuff from database
   var imp1= "SELECT elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=$1;"
   client.query(imp1, [r], (error, result) => {
     if(error){throw error}
-    console.log(result)
-      // res.status(200).json(
-      //   results.rows
-      //   );
+      res.status(200).json(
+        results.rows
+      );
     }
   );
 });
