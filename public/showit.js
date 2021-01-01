@@ -196,32 +196,12 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 };
 
 
-
-async function RunStuff(data, line) {
-		console.log(data)
-		if (data.length == 0){
-			console.log("nothing could be found")
-		}
-		else{
-			var dat = await Promise.all([
-				PrepData(data, 0, line),
-				PrepData(data, 1, line)
-			])
-			console.log(dat)
-			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow)
-			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow)
-
-			console.log("Sorry it takes a while")
-		}
-	}
-
-
 async function ShowIt(){
 
 	toggle("none", "inline")
 
 	var line = document.querySelector('#selection').value.toUpperCase()
-	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line)//.then((data) => RunStuff(data, line))
+	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line)
 	if (data.length == 0){
 		console.log("nothing could be found")
 	}
