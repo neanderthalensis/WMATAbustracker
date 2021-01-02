@@ -25,6 +25,12 @@ and timeframe:
 </select>
 <button id = "sub" onclick="ShowIt()"> Plot It! </button>
 <img id="loading" src="loading.gif"/>
+<br>
+<div class="submenu">
+<input type="checkbox" id="enroute"> Show Enroute
+<input type="checkbox" id="stops"> Show Stops
+<input type="checkbox" id="interactive"> Interactive Tooltip
+</div>
 </div>
 <div class="line"></div>
 <div class = "plothere" id="legend"></div>
@@ -32,7 +38,7 @@ and timeframe:
 <div class = "plothere" id = "plothere1"></div>
 <div class="line"></div>
 <div id="text">
-This thing allows you to look at mean delay and mean early arrival times over the past 24 hours on your favourite buslines. Bus position and delay is collected every 30 seconds using the Washington Metropolitan Area Transit Authority (WMATA) API. The Y axis is delay while the X axis is normalized position on the route.
+This app allows you to look at mean delay and mean early arrival times over the past 24 hours on your favourite buslines. Bus position and delay is collected every 30 seconds using the Washington Metropolitan Area Transit Authority (WMATA) API. The Y axis is delay while the X axis is normalized position on the route.
 </div>
 </body>
 

@@ -2,14 +2,22 @@ body{
 	margin: auto;
 	font-family: Arial;
 }
+.checkbox{
+	border-radius: 0.25em;}
 .menu{
 	padding-top: 50px;
 	font-weight: bold;
 	font-size: 25px;
-	border-color: 'black';
 	width: 80%;
+	text-align: left;
 	margin: auto;
-	text-align: center;
+}
+.submenu{
+	padding-top: 20px;
+	font-weight: bold;
+	font-size: 20px;
+	width: 80%;
+	text-align: left;
 }
 .sel{
 	height: 30px;

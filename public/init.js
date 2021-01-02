@@ -1,7 +1,7 @@
 function IniPlot(dir){
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
-    	height = 300 - margin.top - margin.bottom;
+    	height = 330 - margin.top - margin.bottom-30;
     var svg = d3.select("#plothere" + dir)
   		.append("svg")
     	.attr("width", width + margin.left + margin.right)
@@ -13,6 +13,7 @@ function IniPlot(dir){
     	.domain([0, 100])
     	.range([ 0, width ]);
     svg.append("g")
+        .attr("class", "xaxis")
         .attr("transform", "translate(0," + height*0.5 + ")")
         .call(d3.axisTop(xs).tickValues([50, 100]));
     var ys = d3.scaleLinear()
@@ -25,6 +26,14 @@ function IniPlot(dir){
     	.attr("class", "upline");
     svg.append("path")
     	.attr("class", "downline");
+    d3.select("#plothere" + dir).selectAll("svg")
+        .append("g")
+        .attr("id", "disp"+dir)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .append("text")
+        .attr("x", 20)             
+        .attr("y", height+15)
+        .text();
 }
 
 function Legend(){
