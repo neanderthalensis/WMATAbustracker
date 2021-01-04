@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/api/route/:r", (req, res) => { // just passes it along
   const r = req.params.r
-  var imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?Date=2020-12-30&RouteID=' + r + '&api_key='+key
+  var imp1 = 'https://api.wmata.com/Bus.svc/json/jRouteDetails?RouteID=' + r + '&api_key='+key
   request(imp1).pipe(res)
 });
 

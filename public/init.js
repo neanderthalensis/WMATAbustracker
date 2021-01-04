@@ -89,6 +89,9 @@ function Legend(){
 
 
 $(document).ready( () => {
+    document.querySelector('#binsize').value = 300
+    document.querySelector('#selection').value = "C4"
+
 	var sel = document.getElementById('selection')
 	var list = document.createElement('Datalist')
 		list.setAttribute("id", "buses")

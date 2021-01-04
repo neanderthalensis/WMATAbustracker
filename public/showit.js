@@ -35,7 +35,30 @@ function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasou
 	}
 }
 
+function ReLatLon(filroute, kmpos){
+	var tlat;
+	var tlon;
+	for(i=0; i < filroute.length; i++){
+		if (i == filroute.length-1 || kmpos == 0){
+				tlat = filroute[i].Lat.toFixed(3)
+				tlon = filroute[i].Lon.toFixed(3)
+				break
+			}
+		else if (kmpos < filroute[i].tot && i > 0){
+				tlat = (filroute[i].Lat + (Math.abs(filroute[i-1].Lat - filroute[i].Lat)*((kmpos-filroute[i].tot)/(filroute[i].tot-filroute[i-1].tot)))).toFixed(3)
+				tlon = (filroute[i].Lon + (Math.abs(filroute[i-1].Lon - filroute[i].Lon)*((kmpos-filroute[i].tot)/(filroute[i].tot-filroute[i-1].tot)))).toFixed(3)
+				break
+			}
+		}
+	return{
+		tlat: tlat,
+		tlon: tlon
+	}
+}
+
 function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute){
+	console.log(filstops)
+	if (filbus.length > 0){
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
     	height = 330 - margin.top - margin.bottom-30;
@@ -47,25 +70,11 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 				.attr("x1", pos)
 				.attr("x2", pos)
 				.style("stroke-opacity", "1");
-			let perpos = xs.invert(pos).toFixed(0)
-			let kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
-			var tlat;
-			var tlon;
-			for(i=0; i < filroute.length; i++){
-				if (kmpos < filroute[i].tot && i < filroute.length-1){
-					tlat = filroute[i].Lat + (Math.abs(filroute[i].Lat - filroute[i+1].Lat)*((kmpos-filroute[i])/(filroute[i+1].tot-filroute[i].tot)))
-					tlon = filroute[i].Lon + (Math.abs(filroute[i].Lon - filroute[i+1].Lon)*((kmpos-filroute[i])/(filroute[i+1].tot-filroute[i].tot)))
-					console.log("hi")
-					break
-				}
-				else if (i == filroute.length-1){
-					tlat = filroute[filroute.length-1].Lat
-					tlon = filroute[filroute.length-1].Lon
-					break
-				}
-			}
+			var perpos = xs.invert(pos).toFixed(0)
+			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
+			var coo = ReLatLon(filroute, kmpos)
 			d3.select("#disp"+filbus[0].directionnum).selectAll("text")
-				.text("% along route: " + perpos + "; Km along route: " + kmpos + "; Lat: " + tlat + "; Lon: " + tlon)
+				.text("% along route: " + perpos + "; Km along route: " + kmpos + "; Lat: " + coo.tlat + "; Lon: " + coo.tlon)
 			}
 		else {dehover}
 	}
@@ -85,6 +94,34 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 	}
 	var dehover = function(){
 		svg.selectAll("#hoverline").remove()
+		d3.select("#disp"+filbus[0].directionnum).selectAll("text").text("")
+	}
+	var map = function(){
+		// console.log(d3.event.keyCode)
+		// if (d3.event.keyCode == 17){
+  //   		d3.select("#plothere" + filbus[0].directionnum).select("svg").on("click", function(){
+  //   			var pos = d3.mouse(this)[0]-margin.left
+		// 		var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
+		// 		var coo = ReLatLon(filroute, kmpos)
+		// 		var str = coo.tlat + "," + coo.tlon
+		// // 		str.select().execCommand("copy")
+  // //   		})
+  //   	}
+    	// else{
+			var pos = d3.mouse(this)[0]-margin.left
+			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
+			var coo = ReLatLon(filroute, kmpos)
+			console.log(document.getElementById("mapping").value)
+			if (document.getElementById("mapping").value == "osm" ){
+				window.open("https://www.openstreetmap.org/#map=16/"+ coo.tlat +"/"+ coo.tlon, '_blank')
+			}
+			else if (document.getElementById("mapping").value == "google" ){
+				window.open("https://www.google.com/maps/@"+ coo.tlat +","+ coo.tlon +",16z", '_blank')
+			}
+			else if (document.getElementById("mapping").value == "bing" ){
+				window.open("https://www.bing.com/maps?cp="+ coo.tlat +"~"+ coo.tlon + "&lvl=16", '_blank')
+			}
+		// }
 	}
     var svg = d3.select("#p" + filbus[0].directionnum)
     var xs = d3.scaleLinear()
@@ -154,8 +191,10 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
    		d3.select("#plothere" + filbus[0].directionnum).select("svg").on("mousemove", hover)
     	d3.select("#plothere" + filbus[0].directionnum).select("svg").on("mouseenter", onhover)
     	d3.select("#plothere" + filbus[0].directionnum).select("svg").on("mouseleave", dehover)
+    	d3.select("#plothere" + filbus[0].directionnum).select("svg").on("click", map)
 	}
-}
+
+}}
 function Text(filbus){
 	var here = d3.select("body")
 		.data(filbus)
@@ -172,6 +211,7 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 	var filstops;
 	var stations;
 	var filroute;
+
 	await d3.json('https://wmatabustracker.herokuapp.com/api/route/'+r).then((routedata) => {
 		filbus = busdata.filter((d) => {return d.directionnum == dir})
 		if (dir == 0){
@@ -235,9 +275,9 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 				else { 
 					while(n<filroute.length-1){
 						if ((ele.lat >= filroute[n].Latdown & ele.lon <= filroute[n].Lonup & ele.lat <= filroute[n+1].Latup & ele.lon >= filroute[n+1].Londown) || (ele.lat <= filroute[n].Latup & ele.lon <= filroute[n].Lonup & ele.lat >= filroute[n+1].Latdown & ele.lon >= filroute[n+1].Londown) || (ele.lat <= filroute[n].Latup & ele.lon >= filroute[n].Londown & ele.lat >= filroute[n+1].Latdown & ele.lon <= filroute[n+1].Lonup) || (ele.lat >= filroute[n].Latdown & ele.lon >= filroute[n].Londown & ele.lat <= filroute[n+1].Latup & ele.lon <= filroute[n+1].Lonup)){
-							//ele.tot = (filroute[n].tot + Math.sqrt((Math.pow(Math.abs(filroute[n].Lat - ele.lat), 2))+(Math.pow(Math.abs(filroute[n].Lon - ele.lon), 2))))*100/filroute[filroute.length-1].tot
+							var binsize = document.querySelector('#binsize').value/1000
 							ele.tot = filroute[n].tot + Distance(ele.lat, ele.lon, filroute[n].Lat, filroute[n].Lon, "K")
-							ele.totless = ((ele.tot/filroute[filroute.length-1].tot)*100).toFixed(0)
+							ele.totless = (Math.floor(ele.tot/binsize)*100)/Math.floor(filroute[filroute.length-1].tot/binsize)
 							place = n
 						}
 					n += 1
@@ -247,28 +287,30 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 		})
 
 
-		filbus = filbus.filter((d)=>{return d.tot > 0})
-		for(i=1;i<=100; i++){
-  			var temp = filbus.filter((d) => {return d.totless == i && 0 <= d.deviation;})
+
+		//filbus = filbus.filter((d)=>{return d.tot > 0})
+
+		var bins = [... new Set(filbus.map((d)=>{return d.totless}))].sort((a,b) => {return a-b})
+		for(i=1;i<=bins.length; i++){
+  			var temp = filbus.filter((d) => {return d.totless == bins[i] && 0 <= d.deviation;})
 			var tripavgs = [];
   				trips.forEach((ele) => {
   					tripavgs.push((d3.mean(temp.filter((d) => {return d.tripid == ele}).map((d) => {return d.deviation}))))
   				})
-  			var entry = {mean: d3.mean(tripavgs), where: i}
+  			var entry = {mean: d3.mean(tripavgs), where: bins[i]}
   			if(entry.mean != undefined){upavgs.push(entry)}
   			
-  			temp = filbus.filter((d) => {return d.totless == i && d.deviation <= 0;})
+  			temp = filbus.filter((d) => {return d.totless == bins[i] && d.deviation <= 0;})
 			var tripavgs = [];
   				trips.forEach((ele) => {
   					tripavgs.push((d3.mean(temp.filter((d) => {return d.tripid == ele}).map((d) => {return d.deviation}))))
   				})
-  			var entry = {mean: d3.mean(tripavgs), where: i}
+  			var entry = {mean: d3.mean(tripavgs), where: bins[i]}
   			if (entry.mean != undefined){downavgs.push(entry)}
 
  		}
  		 justnow = filbus.filter((d) => {return d.ts == (d3.max(filbus.map((d) => {return d.ts})))})
 	})
-
 	return{
 	 	filbus: filbus,
 	 	upavgs: upavgs, 
@@ -291,6 +333,9 @@ async function ShowIt(){
 
 	var line = document.querySelector('#selection').value.toUpperCase()
 	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line)
+	console.log(data)
+	console.log(d3.max(data.map((d) => {return d.ts})))
+
 	if (data.length == 0){
 		console.log("nothing could be found")
 	}
@@ -299,7 +344,6 @@ async function ShowIt(){
 			PrepData(data, 0, line),
 			PrepData(data, 1, line)
 		])
-		console.log(dat)
 		await Promise.all([
 			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow, dat[0].filstops, dat[0].stations, dat[0].filroute),
 			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow, dat[1].filstops, dat[1].stations, dat[1].filroute)
