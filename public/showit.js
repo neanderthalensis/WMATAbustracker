@@ -13,7 +13,7 @@ function toggle(a, b){
 }
 
 
-function Distance(lat1, lon1, lat2, lon2, unit) { // frim https://www.geodatasource.com/developers/javascript
+function Distance(lat1, lon1, lat2, lon2, unit) { // from https://www.geodatasource.com/developers/javascript
 	if ((lat1 == lat2) && (lon1 == lon2)) {
 		return 0;
 	}
@@ -56,7 +56,7 @@ function ReLatLon(filroute, kmpos){
 	}
 }
 
-function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute){
+function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute, niceheading){
 	if (filbus.length > 0){
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
@@ -73,7 +73,7 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
 			var coo = ReLatLon(filroute, kmpos)
 			d3.select("#disp"+filbus[0].directionnum).selectAll("text")
-				.text("% along route: " + perpos + "; Km along route: " + kmpos + "; Lat: " + coo.tlat + "; Lon: " + coo.tlon)
+				.text(niceheading + "; % along route: " + perpos + "; Km along route: " + kmpos + "; Lat: " + coo.tlat + "; Lon: " + coo.tlon)
 			}
 		else {dehover}
 	}
@@ -93,10 +93,9 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 	}
 	var dehover = function(){
 		svg.selectAll("#hoverline").remove()
-		d3.select("#disp"+filbus[0].directionnum).selectAll("text").text("")
+		d3.select("#disp"+filbus[0].directionnum).selectAll("text").text(niceheading)
 	}
 	var map = function(){
-
 			var pos = d3.mouse(this)[0]-margin.left
 			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
 			var coo = ReLatLon(filroute, kmpos)
@@ -146,6 +145,24 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
     	svg.selectAll(".xaxis")
     		.call(d3.axisTop(xs).tickValues([50, 100]));
     }
+    if((document.getElementById("grid").checked)){
+    	svg.append("g")
+    		.attr("class", "xgrid")
+    		.lower()
+    		.call(d3.axisTop(xs).tickSizeInner(-height).tickFormat('').ticks(10))
+    		.selectAll(".tick").selectAll("line").style("stroke", "#dddddd")
+    	svg.selectAll(".xgrid").selectAll("path").remove()
+
+    	svg.append("g")
+    		.attr("class", "ygrid")
+    		.lower()
+    		.call(d3.axisLeft(ys).tickSizeInner(-width).tickFormat(''))
+    		.selectAll(".tick").selectAll("line").style("stroke", "#dddddd")
+    }
+    else{
+    	svg.selectAll(".xgrid").remove()
+    	svg.selectAll(".ygrid").remove()
+    }
     svg.selectAll(".yaxis")
         .call(d3.axisLeft(ys));
     var aline = d3.line()
@@ -174,6 +191,7 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
         .style("stroke-width", "2px")
         .style("fill", "none")
         .style("stroke", "blue");
+   	d3.select("#disp"+filbus[0].directionnum).selectAll("text").text(niceheading)
     if (document.getElementById("interactive").checked){
    		d3.select("#plothere" + filbus[0].directionnum).select("svg").on("mousemove", hover)
     	d3.select("#plothere" + filbus[0].directionnum).select("svg").on("mouseenter", onhover)
@@ -198,14 +216,17 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 	var filstops;
 	var stations;
 	var filroute;
+	var niceheading;
 
 	await d3.json('https://wmatabustracker.herokuapp.com/api/route/'+r).then((routedata) => {
 		filbus = busdata.filter((d) => {return d.directionnum == dir})
 		if (dir == 0){
+			niceheading = routedata.Direction0.DirectionText + " - " + routedata.Direction0.TripHeadsign 
 			filroute = routedata.Direction0.Shape
 			filstops = routedata.Direction0.Stops
 		} //bad 
 		else{
+			niceheading = routedata.Direction1.DirectionText + " - " + routedata.Direction1.TripHeadsign 
 			filroute = routedata.Direction1.Shape
 			filstops = routedata.Direction1.Stops
 		}
@@ -305,7 +326,8 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 	 	justnow: justnow,
 	 	filstops: filstops,
 	 	stations: stations,
-	 	filroute: filroute
+	 	filroute: filroute,
+	 	niceheading: niceheading
 	}
 };
 
@@ -319,32 +341,41 @@ async function ShowIt(){
 	toggle("none", "inline")
 	var checker = await d3.json('https://wmatabustracker.herokuapp.com/api/routes')
 	var line = document.querySelector('#selection').value.toUpperCase()
+	var fail = false
 	if (!(checker.Routes.map((d) => {return d.RouteID}).includes(line))){
 		line = null
-		alert("Invalid Input")
+		document.getElementById("message").innerHTML = "Invalid input for line"
+		fail = true
 	}
 	var freq = document.querySelector('#frequency').value
 	var tframe = document.querySelector('#timeframe').value
 	var tstart = document.querySelector('#start').value
 	var tend = document.querySelector('#end').value
-	if (tstart/1 != tstart && tend/1 != tend){
+	if (tstart/1 != tstart || tend/1 != tend || tstart < 0 || tstart > 24 || tend < 0 || tend > 24 ){
 		tstart = null
 		tend = null
-		alert("Invalid Input")
+		document.getElementById("message").innerHTML = "Invalid input for time range"
+		fail = true
 	}
-	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq+'&'+tframe+'&'+tstart+'&'+tend)
+	console.log(fail)
+	if (!(fail)){
+		var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq+'&'+tframe+'&'+tstart+'&'+tend)
+		if (data.length == 0){
+			document.getElementById("message").innerHTML = "No data found for this line."
+			fail = true
+		}
+	}
 
-	if (data.length == 0){
-		console.log("nothing could be found")
-	}
+	if (fail){document.getElementById("message").style.display = "block"}
 	else{
+		document.getElementById("message").style.display = "none"
 		var dat = await Promise.all([
 			PrepData(data, 0, line),
 			PrepData(data, 1, line)
 		])
 		await Promise.all([
-			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow, dat[0].filstops, dat[0].stations, dat[0].filroute),
-			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow, dat[1].filstops, dat[1].stations, dat[1].filroute)
+			SubPlot(dat[0].filbus, dat[0].upavgs, dat[0].downavgs, dat[0].justnow, dat[0].filstops, dat[0].stations, dat[0].filroute, dat[0].niceheading),
+			SubPlot(dat[1].filbus, dat[1].upavgs, dat[1].downavgs, dat[1].justnow, dat[1].filstops, dat[1].stations, dat[1].filroute, dat[1].niceheading)
 		])
 	}	
 	toggle("inline", "none")

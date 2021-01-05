@@ -34,30 +34,35 @@
 <img id="loading" src="loading.gif"/>
 <br>
 <div id="submenu">
-<input type="checkbox" id="enroute"> Show Enroute
-<input type="checkbox" id="stops"> Show Stops
-<input type="checkbox" id="interactive"> Interactive Tooltip
-Bin Size (m): <input class = "smallbox" id = "binsize">
-Mapping Service: <select id="mapping">
-	<option value="osm">Open Street Maps</option>
-	<option value="google">Google Maps</option>
-	<option value="bing">Bing Maps</option>
-</select>
-Temporal Resolution: <select id="frequency">
-	<option value="1">20s</option>
-	<option value="2">40s</option>
-	<option value="3">1min 20s</option>
-</select>
-Time range: <input class = "smallbox" id = "start"> - <input class = "smallbox" id = "end">
+	<div class="col">
+		<input type="checkbox" id="enroute"> Show Enroute <br>
+		<input type="checkbox" id="stops"> Show Stops <br>
+		<input type="checkbox" id="grid"> Grid Lines <br>
+	</div>
+	<div class="col">
+		<input type="checkbox" id="interactive"> Tooltip <br>
+		Mapping Service: <select id="mapping">
+			<option value="osm">Open Street Maps</option>
+			<option value="google">Google Maps</option>
+			<option value="bing">Bing Maps</option>
+		</select> <br>
+		Bin Size (m): <input class = "smallbox" id = "binsize"> <br>
+	</div>
+	<div class="col">
+	Temporal Resolution: <select id="frequency"> 
+		<option value="1">20s</option>
+		<option value="2">40s</option>
+		<option value="3">1min 20s</option>
+	</select> <br>
+	Time range: <input class = "smallbox" id = "start"> - <input class = "smallbox" id = "end"> <br>
+	</div>
 </div>
 </div>
 <div class="line"></div>
+<div class = "plothere" id="message"></div>
 <div class = "plothere" id="legend"></div>
 <div class = "plothere" id = "plothere0"></div>
 <div class = "plothere" id = "plothere1"></div>
-<div class="line"></div>
-<div id="text">
-This app allows you to look at mean delay and mean early arrival times over the past 24 hours on your favourite buslines. Bus position and delay is collected every 30 seconds using the Washington Metropolitan Area Transit Authority (WMATA) API. The Y axis is delay while the X axis is normalized position on the route.
-</div>
+
 </body>
 

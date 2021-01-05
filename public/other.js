@@ -1,6 +1,6 @@
 function Options() {
-	if (!(document.getElementById("submenu").style.display =="block")){
-		document.getElementById("submenu").style.display = 'block'
+	if (!(document.getElementById("submenu").style.display =="flex")){
+		document.getElementById("submenu").style.display = 'flex'
 		document.getElementById("opt").style["background-color"] = '#666666'
 	}
 	else{
@@ -9,4 +9,9 @@ function Options() {
 	}
 }
 function About() {
+	window.open("./about.html","_self")
+}
+
+function GoBack() {
+	window.open("./index.html","_self")
 }
