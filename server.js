@@ -47,26 +47,26 @@ app.get("/api/bus/:r&:f&:t&:th&:thh", async (req, res) => { // gets stuff from d
   const th = req.params.th
   const thh = req.params.thh
   var imp1=`SELECT 
-    ts AS ts, 
-    elem->'RouteID' AS routeid,
-    elem->'Deviation' AS deviation,
-    elem->'Lat' AS lat,
-    elem->'Lon' AS lon,
-    elem->'DirectionNum' AS directionnum,
-    elem->'TripID' AS tripid 
-  FROM (
-  SELECT ts 
+  ts AS ts, 
+  elem->'RouteID' AS routeid,
+  elem->'Deviation' AS deviation,
+  elem->'Lat' AS lat,
+  elem->'Lon' AS lon,
+  elem->'DirectionNum' AS directionnum,
+  elem->'TripID' AS tripid 
+FROM (
+  SELECT * 
   FROM (
     SELECT 
       ts AS ts,
       jsonb AS jsonb, 
       ROW_NUMBER() OVER (ORDER BY ts) AS row 
     FROM bus
-    ) t
-  WHERE t.row % $2 = 0 AND ts >= $3 AND $4 <= EXTRACT(hour FROM ts) AND $5 >= EXTRACT(hour FROM ts)
-  ) bla,
-  json_array_elements(jsonb::json -> 'BusPositions') elem
-  WHERE elem ->>'RouteID'=$1;`
+    ) 
+  t WHERE t.row % $2 = 0 AND ts >= $3 AND $4 <= EXTRACT(hour FROM ts) AND $5 >= EXTRACT(hour FROM ts)
+) bla,
+json_array_elements(jsonb::json -> 'BusPositions') elem
+WHERE elem ->>'RouteID'=$1;`
   var hey = await client.query(imp1, [r, f, t, th, thh])
   res.status(200).json(hey.rows)
 });

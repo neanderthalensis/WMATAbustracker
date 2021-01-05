@@ -15,7 +15,7 @@ FROM (
 	 		ROW_NUMBER() OVER (ORDER BY ts) AS row 
 	 	FROM bus
 	 	) 
-	t WHERE t.row % $2 = 0
+	t WHERE t.row % 1 = 0 AND ts >= '2021-01-03T04:17:28.083Z' AND 0 <= EXTRACT(hour FROM ts) AND 24 >= EXTRACT(hour FROM ts)
 ) bla,
 json_array_elements(jsonb::json -> 'BusPositions') elem
-WHERE elem ->>'RouteID'=$1;
+WHERE elem ->>'RouteID'='C4';
