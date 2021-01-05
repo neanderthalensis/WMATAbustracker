@@ -1,4 +1,4 @@
-`SELECT 
+SELECT 
 	ts AS ts, 
 	elem->'RouteID' AS routeid,
 	elem->'Deviation' AS deviation,
@@ -18,4 +18,4 @@ FROM (
 	t WHERE t.row % $2 = 0
 ) bla,
 json_array_elements(jsonb::json -> 'BusPositions') elem
-WHERE elem ->>'RouteID'=$1;`
+WHERE elem ->>'RouteID'=$1;

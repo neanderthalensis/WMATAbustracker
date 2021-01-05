@@ -17,11 +17,12 @@
 
 <body>
 <div class="menu">
-Please select a line:
+Please select a Line:
 <input class = "sel" id = "selection">
-and timeframe:
-<select class="sel">
-	<option value="1d">24h</option>
+and Timeframe:
+<select class="sel" id="timeframe">
+	<option value= 86400000>24h</option>
+	<option value= 172800000>48h</option>
 </select>
 <button id = "sub" onclick="ShowIt()"> Plot It! </button>
 <img id="loading" src="loading.gif"/>
@@ -30,17 +31,18 @@ and timeframe:
 <input type="checkbox" id="enroute"> Show Enroute
 <input type="checkbox" id="stops"> Show Stops
 <input type="checkbox" id="interactive"> Interactive Tooltip
-Bin Size (m): <input id = "binsize">
+Bin Size (m): <input class = "smallbox" id = "binsize">
 Mapping Service: <select id="mapping">
 	<option value="osm">Open Street Maps</option>
 	<option value="google">Google Maps</option>
 	<option value="bing">Bing Maps</option>
 </select>
 Temporal Resolution: <select id="frequency">
-	<option value="20">20s</option>
-	<option value="40">40s</option>
-	<option value="80">1min 20s</option>
+	<option value="1">20s</option>
+	<option value="2">40s</option>
+	<option value="3">1min 20s</option>
 </select>
+Time range: <input class = "smallbox" id = "start"> - <input class = "smallbox" id = "end">
 </div>
 </div>
 <div class="line"></div>

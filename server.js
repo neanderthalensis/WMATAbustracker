@@ -40,9 +40,12 @@ app.get("/api/routes", (req, res) => { // just passes it along
 });
 
 
-app.get("/api/bus/:r&:f", async (req, res) => { // gets stuff from database
+app.get("/api/bus/:r&:f&:t&:th&:thh", async (req, res) => { // gets stuff from database
   const r = req.params.r
   const f = req.params.f
+  const t = new Date(new Date()-req.params.t)
+  const th = req.params.th
+  const thh = req.params.thh
   var imp1=`SELECT 
     ts AS ts, 
     elem->'RouteID' AS routeid,
@@ -52,19 +55,19 @@ app.get("/api/bus/:r&:f", async (req, res) => { // gets stuff from database
     elem->'DirectionNum' AS directionnum,
     elem->'TripID' AS tripid 
   FROM (
-  SELECT * 
+  SELECT ts 
   FROM (
     SELECT 
       ts AS ts,
       jsonb AS jsonb, 
       ROW_NUMBER() OVER (ORDER BY ts) AS row 
     FROM bus
-    ) 
-  t WHERE t.row % $2 = 0
+    ) t
+  WHERE t.row % $2 = 0 AND ts >= $3 AND $4 <= EXTRACT(hour FROM ts) AND $5 >= EXTRACT(hour FROM ts)
   ) bla,
   json_array_elements(jsonb::json -> 'BusPositions') elem
   WHERE elem ->>'RouteID'=$1;`
-  var hey = await client.query(imp1, [r, f])
+  var hey = await client.query(imp1, [r, f, t, th, thh])
   res.status(200).json(hey.rows)
 });
 

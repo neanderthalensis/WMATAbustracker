@@ -2,8 +2,10 @@ body{
 	margin: auto;
 	font-family: Arial;
 }
-.checkbox{
-	border-radius: 0.25em;}
+.smallbox{
+	width: 40px;
+	}
+
 .menu{
 	padding-top: 50px;
 	font-weight: bold;

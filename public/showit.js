@@ -317,11 +317,22 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 async function ShowIt(){
 
 	toggle("none", "inline")
-
+	var checker = await d3.json('https://wmatabustracker.herokuapp.com/api/routes')
 	var line = document.querySelector('#selection').value.toUpperCase()
-	var freq = document.querySelector('#frequency').value 
-	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq)
-	console.log(d3.max(data.map((d) => {return d.ts})))
+	if (!(checker.Routes.map((d) => {return d.RouteID}).includes(line))){
+		line = null
+		alert("Invalid Input")
+	}
+	var freq = document.querySelector('#frequency').value
+	var tframe = document.querySelector('#timeframe').value
+	var tstart = document.querySelector('#start').value
+	var tend = document.querySelector('#end').value
+	if (tstart/1 != tstart && tend/1 != tend){
+		tstart = null
+		tend = null
+		alert("Invalid Input")
+	}
+	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq+'&'+tframe+'&'+tstart+'&'+tend)
 
 	if (data.length == 0){
 		console.log("nothing could be found")
