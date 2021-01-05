@@ -92,6 +92,8 @@ $(document).ready( () => {
     document.querySelector('#binsize').value = 300
     document.querySelector('#selection').value = "C4"
     document.querySelector('#enroute').checked = true
+    document.querySelector('#start').value = 0
+    document.querySelector('#end').value = 24
 
 
 	var sel = document.getElementById('selection')

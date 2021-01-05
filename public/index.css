@@ -2,36 +2,41 @@ body{
 	margin: auto;
 	font-family: Arial;
 }
+
 .smallbox{
 	width: 40px;
 	}
 
-.menu{
+#menu{
 	padding-top: 50px;
 	font-weight: bold;
 	font-size: 25px;
 	width: 80%;
-	text-align: left;
+	text-align: center;
 	margin: auto;
+	line-height: 2;
 }
-.submenu{
+#submenu{
+	display: none;
 	padding-top: 20px;
-	font-weight: bold;
-	font-size: 20px;
+	font-weight: normal;
+	font-size: 19px;
 	width: 80%;
 	text-align: left;
+	font-family: Optima;
+
 }
 .sel{
 	height: 30px;
-	width: 200px;
+	width: 150px;
 	font-size: 20px;
 	border: none;
 	border-bottom: 2px dotted black;
 }
-#sub{
+.but{
 	height: 35px;
-	width:80px;
-	font-size: 20px;
+	width:70px;
+	font-size: 15px;
 	color: white;
 	background-color: black;
 	border-style: none;
