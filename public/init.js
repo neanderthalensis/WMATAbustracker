@@ -91,17 +91,19 @@ function Legend(){
 $(document).ready( () => {
     document.querySelector('#binsize').value = 300
     document.querySelector('#selection').value = "C4"
+    document.querySelector('#enroute').checked = true
+
 
 	var sel = document.getElementById('selection')
 	var list = document.createElement('Datalist')
 		list.setAttribute("id", "buses")
 		list.setAttribute("width", "100px")
-	d3.json('https://wmatabustracker.herokuapp.com/api/routes', function(lines){
-	lines.Routes.forEach((ele) => {
-		var option = document.createElement('option')
-		option.value = ele.RouteID;
-		option.textContent=ele.Name
-		list.appendChild(option)
+	d3.json('https://wmatabustracker.herokuapp.com/api/routes').then((lines) => {
+        lines.Routes.forEach((ele) => {
+		  var option = document.createElement('option')
+		  option.value = ele.RouteID;
+		  option.textContent=ele.Name
+		  list.appendChild(option)
 	})
 	})
 	sel.setAttribute('list', 'buses')
@@ -109,6 +111,5 @@ $(document).ready( () => {
     Legend()
 	IniPlot(0)
 	IniPlot(1)
-
 
 	})

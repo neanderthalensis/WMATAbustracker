@@ -40,10 +40,31 @@ app.get("/api/routes", (req, res) => { // just passes it along
 });
 
 
-app.get("/api/bus/:r", async (req, res) => { // gets stuff from database
+app.get("/api/bus/:r&:f", async (req, res) => { // gets stuff from database
   const r = req.params.r
-  var imp1= "SELECT ts AS ts, elem->'RouteID' AS routeid, elem->'Deviation' AS deviation, elem->'Lat' AS lat, elem->'Lon' AS lon, elem->'DirectionNum' AS directionnum, elem->'TripID' AS tripid FROM bus, json_array_elements(jsonb::json -> 'BusPositions') elem WHERE elem ->>'RouteID'=$1;"
-  var hey = await client.query(imp1, [r])
+  const f = req.params.f
+  var imp1=`SELECT 
+    ts AS ts, 
+    elem->'RouteID' AS routeid,
+    elem->'Deviation' AS deviation,
+    elem->'Lat' AS lat,
+    elem->'Lon' AS lon,
+    elem->'DirectionNum' AS directionnum,
+    elem->'TripID' AS tripid 
+  FROM (
+  SELECT * 
+  FROM (
+    SELECT 
+      ts AS ts,
+      jsonb AS jsonb, 
+      ROW_NUMBER() OVER (ORDER BY ts) AS row 
+    FROM bus
+    ) 
+  t WHERE t.row % $2 = 0
+  ) bla,
+  json_array_elements(jsonb::json -> 'BusPositions') elem
+  WHERE elem ->>'RouteID'=$1;`
+  var hey = await client.query(imp1, [r, f])
   res.status(200).json(hey.rows)
 });
 

@@ -57,7 +57,6 @@ function ReLatLon(filroute, kmpos){
 }
 
 function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute){
-	console.log(filstops)
 	if (filbus.length > 0){
 	var margin = {top: 10, right: 30, bottom: 30, left: 30},
     	width = 0.8*screen.width - margin.left - margin.right,
@@ -97,21 +96,10 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 		d3.select("#disp"+filbus[0].directionnum).selectAll("text").text("")
 	}
 	var map = function(){
-		// console.log(d3.event.keyCode)
-		// if (d3.event.keyCode == 17){
-  //   		d3.select("#plothere" + filbus[0].directionnum).select("svg").on("click", function(){
-  //   			var pos = d3.mouse(this)[0]-margin.left
-		// 		var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
-		// 		var coo = ReLatLon(filroute, kmpos)
-		// 		var str = coo.tlat + "," + coo.tlon
-		// // 		str.select().execCommand("copy")
-  // //   		})
-  //   	}
-    	// else{
+
 			var pos = d3.mouse(this)[0]-margin.left
 			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
 			var coo = ReLatLon(filroute, kmpos)
-			console.log(document.getElementById("mapping").value)
 			if (document.getElementById("mapping").value == "osm" ){
 				window.open("https://www.openstreetmap.org/#map=16/"+ coo.tlat +"/"+ coo.tlon, '_blank')
 			}
@@ -121,7 +109,6 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 			else if (document.getElementById("mapping").value == "bing" ){
 				window.open("https://www.bing.com/maps?cp="+ coo.tlat +"~"+ coo.tlon + "&lvl=16", '_blank')
 			}
-		// }
 	}
     var svg = d3.select("#p" + filbus[0].directionnum)
     var xs = d3.scaleLinear()
@@ -332,8 +319,8 @@ async function ShowIt(){
 	toggle("none", "inline")
 
 	var line = document.querySelector('#selection').value.toUpperCase()
-	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line)
-	console.log(data)
+	var freq = document.querySelector('#frequency').value 
+	var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq)
 	console.log(d3.max(data.map((d) => {return d.ts})))
 
 	if (data.length == 0){
