@@ -10,7 +10,7 @@ body{
 #menu{
 	padding-top: 50px;
 	font-weight: bold;
-	font-size: 25px;
+	font-size: 24px;
 	text-align: center;
 	margin: auto;
 	line-height: 2;
@@ -47,6 +47,7 @@ body{
 	border-style: none;
 	border-radius: 8px;
 	display: inline;
+	cursor: pointer;
 }
 #loading{
 	margin-left: 29px;
@@ -72,4 +73,10 @@ body{
 	border-bottom: 3px dashed black;
 	margin: auto;
 	padding-top: 50px;
+}
+select{
+	cursor: pointer;
+}
+input{
+	cursor: pointer;
 }

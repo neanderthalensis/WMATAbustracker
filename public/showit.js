@@ -74,7 +74,7 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 			var coo = ReLatLon(filroute, kmpos)
 			var distimp = "; Km along route: "
 			if (document.querySelector('#interactive').checked){
-				kmpos = kmpos*0.6213712
+				kmpos = (kmpos*0.6213712).toFixed(1)
 				distimp = "; Miles along route: "
 			}
 				d3.select("#disp"+filbus[0].directionnum).selectAll("text")
@@ -271,7 +271,7 @@ async function PrepData(busdata, dir, r){ //determines position of the bus and a
 
 		var trips = [... new Set(filbus.map((d)=>{return d.tripid}))]
 
-		stations = filstops.filter((d) => {return d.Name.toUpperCase().includes("BAY") || d.Name.toUpperCase().includes("TRANSIT CENTER") || d.Name.toUpperCase().includes("TRANSIT CTR")}) 
+		stations = filstops.filter((d) => {return (d.Name.toUpperCase().includes("BAY") || d.Name.toUpperCase().includes("TRANSIT CENTER") || d.Name.toUpperCase().includes("TRANSIT CTR") || d.Name.toUpperCase().includes("STATION")) && !(d.Name.toUpperCase().includes("STATION RD"))}) 
 		trips.forEach((olo, o) => {
 			var workthis = filbus.filter((d)=> {return d.tripid == olo})
 			workthis.sort((a, b)=>{return new Date(a.ts).getTime()-new Date(b.ts).getTime()})
