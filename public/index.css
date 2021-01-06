@@ -3,9 +3,6 @@ body{
 	margin: auto;
 	font-family: Arial;
 }
-svg{
-	width:100%;
-}
 .smallbox{
 	width: 40px;
 	}
@@ -43,7 +40,7 @@ svg{
 }
 .but{
 	height: 35px;
-	width:70px;
+	width:75px;
 	font-size: 15px;
 	color: white;
 	background-color: black;

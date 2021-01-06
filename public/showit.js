@@ -351,13 +351,17 @@ async function ShowIt(){
 	var tframe = document.querySelector('#timeframe').value
 	var tstart = document.querySelector('#start').value
 	var tend = document.querySelector('#end').value
+	var bin = document.querySelector('#binsize').value
 	if (tstart/1 != tstart || tend/1 != tend || tstart < 0 || tstart > 24 || tend < 0 || tend > 24 ){
 		tstart = null
 		tend = null
 		document.getElementById("message").innerHTML = "Invalid input for time range"
 		fail = true
 	}
-	console.log(fail)
+	if (bin <= 0){
+		document.getElementById("message").innerHTML = "Invalid input for bin size"
+		fail = true
+	}
 	if (!(fail)){
 		var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq+'&'+tframe+'&'+tstart+'&'+tend)
 		if (data.length == 0){

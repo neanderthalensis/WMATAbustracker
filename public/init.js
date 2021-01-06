@@ -10,7 +10,6 @@ function IniPlot(dir){
         .attr("viewBox", "0 0 " + 0.8*screen.width +" 300")
   		.append("g")
 		.attr("id", "p"+dir)
-        .attr("width", "100")
     	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var xs = d3.scaleLinear()
     	.domain([0, 100])
@@ -43,13 +42,11 @@ function Legend(){
     var margin = {top: 10, right: 30, bottom: 0, left: 30},
         width = 0.8*screen.width - margin.left - margin.right,
         height = 30 - margin.top - margin.bottom;
-    var left = (width/2)-203
+    if (screen.width > 600){
+    var left = (width/2)-220
     var svg = d3.select("#legend")
         .append("svg")
-        // .attr("width", width + margin.left + margin.right)
-        // .attr("height", height + margin.top + margin.bottom)
-        //.attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1010 30")
+        .attr("viewBox", "0 0 " + 0.8*screen.width +" 30")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     svg.append("circle")
@@ -89,7 +86,52 @@ function Legend(){
         .attr("text-anchor", "right")  
         .style("font-size", "16px") 
         .text("Mean Early Arrival");
-
+    }
+    else{
+    var left = (width/2)-60
+    var svg = d3.select("#legend")
+        .append("svg")
+        .attr("viewBox", "0 0 " + 0.8*screen.width +" 70")
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    svg.append("circle")
+        .attr("cx",left)
+        .attr("cy",10)
+        .attr("r", 5)
+        .style("fill", "black");
+    svg.append("line")
+        .attr("x1", left-5)
+        .attr("y1", 30)
+        .attr("x2", left+5)
+        .attr("y2", 30)
+        .style("stroke", "red")
+        .style("stroke-width", 2);
+    svg.append("line")
+        .attr("x1", left-5)
+        .attr("y1", 50)
+        .attr("x2", left+5)
+        .attr("y2", 50)
+        .style("stroke", "blue")
+        .style("stroke-width", 2);
+    svg.append("text")
+        .attr("x", left+15)             
+        .attr("y", 15)
+        .attr("text-anchor", "left")  
+        .style("font-size", "16px") 
+        .text("Bus Enroute");
+    svg.append("text")
+        .attr("x", left+15)             
+        .attr("y", 35)
+        .attr("text-anchor", "left")  
+        .style("font-size", "16px") 
+        .text("Mean Delay");
+    svg.append("text")
+        .attr("x", left+15)             
+        .attr("y", 55)
+        .attr("text-anchor", "right")  
+        .style("font-size", "16px") 
+        .text("Mean Early Arrival");
+    }
 }
 
 $(document).ready( () => {
