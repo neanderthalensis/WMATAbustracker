@@ -136,7 +136,6 @@ function Legend(){
 
 $(document).ready( () => {
     document.querySelector('#binsize').value = 300
-    document.querySelector('#selection').value = "C4"
     document.querySelector('#enroute').checked = true
     document.querySelector('#interactive').checked = true
     document.querySelector('#start').value = 0
