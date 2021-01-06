@@ -7,9 +7,10 @@ function IniPlot(dir){
     	// .attr("width", width + margin.left + margin.right)
     	// .attr("height", height + margin.top + margin.bottom)
         .attr("preserveAspectRatio", "xMinYMin meet")
-        .attr("viewBox", "0 0 1010 300")
+        .attr("viewBox", "0 0 " + 0.8*screen.width +" 300")
   		.append("g")
 		.attr("id", "p"+dir)
+        .attr("width", "100")
     	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     var xs = d3.scaleLinear()
     	.domain([0, 100])
@@ -47,7 +48,7 @@ function Legend(){
         .append("svg")
         // .attr("width", width + margin.left + margin.right)
         // .attr("height", height + margin.top + margin.bottom)
-        .attr("preserveAspectRatio", "xMinYMin meet")
+        //.attr("preserveAspectRatio", "xMinYMin meet")
         .attr("viewBox", "0 0 1010 30")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -91,12 +92,6 @@ function Legend(){
 
 }
 
-function RePlot(dir){
-    var margin = {top: 10, right: 30, bottom: 0, left: 30},
-     width = 0.8*screen.width - margin.left - margin.right;
-     d3.select("#plothere" + dir).selectAll("svg").attr("width", width);
-}
-
 $(document).ready( () => {
     document.querySelector('#binsize').value = 300
     document.querySelector('#selection').value = "C4"
@@ -123,5 +118,4 @@ $(document).ready( () => {
     Legend()
 	IniPlot(0)
 	IniPlot(1)
-    d3.select(window).on('resize.updatesvg', updateWindow(1));
 	})
