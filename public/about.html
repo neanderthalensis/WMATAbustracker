@@ -17,14 +17,16 @@
 </div>
 <div class="line"></div>
 <div id="text">
-This app allows you to look at mean delay and early arrival times over the past 24 or 48 hours on your favorite bus lines throughout the Washington Metro area. Bus position and delay are collected every 30 seconds using the Washington Metropolitan Area Transit Authority (WMATA) API. Only WMATA operated busses can be visualized. The Y-axis is the delay while the X-axis is the normalized position on the route. This app is not official or endorsed by WMATA.
+This app allows you to look at mean delay and early arrival times over the past 24 or 48 hours on your favorite bus lines throughout the Washington Metro area. Bus position and delay are collected every 20 seconds using the Washington Metropolitan Area Transit Authority (WMATA) API. Only WMATA operated busses can be visualized. The Y-axis is the delay while the X-axis is the normalized position on the route.  Please note that data may not be available for some less active route variants. This app is not official or endorsed by WMATA. Have fun!
 <br><br>
-
+<b>Options Overview</b>
+<br><br>
 <b>Show Enroute:</b> Defaults to true. Shows buses currently en route and current delay.<br><br>
 <b>Show Stops:</b> Defaults to false. Shows stops along the line on the X-axis <br><br>
 <b>Grid Lines:</b> Defaults to false. Shows gridlines. <br><br>
-<b>Tooltip:</b> Defaults to true. Shows a tooltip displaying selected position along the line. Allows for a clickthrough to a map of the given position <br><br>
-<b>Mapping Service:</b> Defaults to Open Street Maps. Needs Interactive Tooltip to be enabled. Designates a mapping service to be used on clickthrough.<br><br>
+<b>Tooltip:</b> Defaults to true. Shows a tooltip displaying selected position along the line. Allows for a clickthrough to a map of the given position. Not recommended on mobile. <br><br>
+<b>U.S. Customary Units:</b> Defaults to false. Needs Tooltip to be enabled. Shows distance alng route in miles instead of kilometers in the tooltip.<br><br>
+<b>Mapping Service:</b> Defaults to Open Street Maps. Needs Tooltip to be enabled. Designates a mapping service to be used on clickthrough.<br><br>
 <b>Bin Size:</b> Defaults to 300m. The size of segments or bins into which data points are collected. Should be based on the sampling frequency and assumed maximum speed of the bus along the line. Smaller size allows for higher spatial resolution; however, the size needs to be large enough, so each bus is sampled at least once in each bin. <br><br>
 <b>Temporal Resolution:</b> Defaults to 20s. Designates frequency at which data is collected. Higher frequency allows for higher resolution but is slower. Bin Size should be adjusted accordingly.<br><br>
 <b>Time Range:</b> Defaults to 0-24 hours. Designates hours of the day for which the data should be shown. 24 hour time needs to be used.

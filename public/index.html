@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=0.7">
 
 <link rel="stylesheet" type="text/css" href="./index.css"/>
+<link rel="icon" type="image/png" sizes ="32x32" href="./siteicon.png">
 <script src = "https://d3js.org/d3.v5.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="./init.js"></script>
@@ -41,20 +42,22 @@
 	</div>
 	<div class="col">
 		<input type="checkbox" id="interactive"> Tooltip <br>
+		<input type="checkbox" id="units"> U.S. Customary Units <br>
 		Mapping Service: <select id="mapping">
 			<option value="osm">Open Street Maps</option>
 			<option value="google">Google Maps</option>
 			<option value="bing">Bing Maps</option>
 		</select> <br>
-		Bin Size (m): <input class = "smallbox" id = "binsize"> <br>
+		
 	</div>
 	<div class="col">
-	Temporal Resolution: <select id="frequency"> 
-		<option value="1">20s</option>
-		<option value="2">40s</option>
-		<option value="3">1min 20s</option>
-	</select> <br>
-	Time range: <input class = "smallbox" id = "start"> - <input class = "smallbox" id = "end"> <br>
+		Bin Size (m): <input class = "smallbox" id = "binsize"> <br>
+		Temporal Resolution: <select id="frequency"> 
+			<option value="1">20s</option>
+			<option value="2">40s</option>
+			<option value="3">1min 20s</option>
+		</select> <br>
+		Time range: <input class = "smallbox" id = "start"> - <input class = "smallbox" id = "end"> <br>
 	</div>
 </div>
 </div>

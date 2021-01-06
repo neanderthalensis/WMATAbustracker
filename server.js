@@ -14,7 +14,7 @@ const client = new Client({ //connects to the database
 
 
 const port = process.env.PORT || 5000;
-const key = process.env.API_KEY || 'b259cbc5f9a34a0da7192b3679918b79';
+const key = process.env.API_KEY;
 
 
 app.use(function(req, res, next) {

@@ -72,9 +72,15 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 			var perpos = xs.invert(pos).toFixed(0)
 			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
 			var coo = ReLatLon(filroute, kmpos)
-			d3.select("#disp"+filbus[0].directionnum).selectAll("text")
-				.text(niceheading + "; % along route: " + perpos + "; Km along route: " + kmpos + "; Lat: " + coo.tlat + "; Lon: " + coo.tlon)
+			var distimp = "; Km along route: "
+			if (document.querySelector('#interactive').checked){
+				kmpos = kmpos*0.6213712
+				distimp = "; Miles along route: "
 			}
+				d3.select("#disp"+filbus[0].directionnum).selectAll("text")
+					.text(niceheading + "; % along route: " + perpos + distimp + kmpos + "; Lat: " + coo.tlat + "; Lon: " + coo.tlon)
+			}
+
 		else {dehover}
 	}
 	var onhover = function(){
