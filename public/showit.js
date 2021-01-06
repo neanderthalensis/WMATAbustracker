@@ -73,7 +73,7 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
 			var kmpos = ((xs.invert(pos).toFixed(0)/100)*filroute[filroute.length-1].tot).toFixed(1)
 			var coo = ReLatLon(filroute, kmpos)
 			var distimp = "; Km along route: "
-			if (document.querySelector('#interactive').checked){
+			if (document.querySelector('#units').checked){
 				kmpos = (kmpos*0.6213712).toFixed(1)
 				distimp = "; Miles along route: "
 			}

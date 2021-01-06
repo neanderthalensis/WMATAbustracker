@@ -134,7 +134,7 @@ function Legend(){
     }
 }
 
-$(document).ready( () => {
+window.addEventListener('load', function () {
     document.querySelector('#binsize').value = 300
     document.querySelector('#enroute').checked = true
     document.querySelector('#interactive').checked = true
