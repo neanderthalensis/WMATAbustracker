@@ -9,7 +9,7 @@ const cors = require('cors');
 
 const client = new Client({ //connects to the database
 	connectionString: process.env.DATABASE_URL,
-	ssl: {rejectUnauthorized: false}
+	ssl: {rejectUnauthorized: true}
 });
 
 
