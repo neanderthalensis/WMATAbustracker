@@ -369,7 +369,7 @@ async function ShowIt(){
 		fail = true
 	}
 	if (!(fail)){
-		//line = line.replaceAll("/", "-")
+		line = line.replace("/", "-")
 		var data = await d3.json('https://wmatabustracker.herokuapp.com/api/bus/'+line+'&'+freq+'&'+tframe+'&'+tstart+'&'+tend)
 		if (data.length == 0){
 			document.getElementById("message").innerHTML = "No data found for this line."
