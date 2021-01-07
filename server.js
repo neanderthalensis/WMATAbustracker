@@ -41,8 +41,9 @@ app.get("/api/routes", (req, res) => { // just passes it along
 
 
 app.get("/api/bus/:r&:f&:t&:th&:thh", async (req, res) => { // gets stuff from database
+
   console.log(r)
-  const r = req.params.r
+  const r = req.params.r.replaceAll("%", "/")
   const f = req.params.f
   const t = new Date(new Date()-req.params.t)
   const th = req.params.th
