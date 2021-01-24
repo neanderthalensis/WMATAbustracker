@@ -138,6 +138,7 @@ window.addEventListener('load', function () {
     document.querySelector('#binsize').value = 300
     document.querySelector('#enroute').checked = true
     document.querySelector('#interactive').checked = true
+    document.querySelector('#frequency').value = 2
     document.querySelector('#start').value = 0
     document.querySelector('#end').value = 24
 
