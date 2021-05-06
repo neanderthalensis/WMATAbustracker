@@ -151,6 +151,8 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
     	svg.selectAll(".xaxis")
     		.call(d3.axisTop(xs).tickValues([50, 100]));
     }
+    svg.selectAll(".xgrid").remove()
+    svg.selectAll(".ygrid").remove()
     if((document.getElementById("grid").checked)){
     	svg.append("g")
     		.attr("class", "xgrid")
@@ -164,10 +166,6 @@ function SubPlot(filbus, upavgs, downavgs, justnow, filstops, stations, filroute
     		.lower()
     		.call(d3.axisLeft(ys).tickSizeInner(-width).tickFormat(''))
     		.selectAll(".tick").selectAll("line").style("stroke", "#dddddd")
-    }
-    else{
-    	svg.selectAll(".xgrid").remove()
-    	svg.selectAll(".ygrid").remove()
     }
     svg.selectAll(".yaxis")
         .call(d3.axisLeft(ys));
