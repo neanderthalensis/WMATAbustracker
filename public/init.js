@@ -148,10 +148,11 @@ window.addEventListener('load', function () {
 		list.setAttribute("id", "buses")
 		list.setAttribute("width", "100px")
 	d3.json('https://wmatabustracker.herokuapp.com/api/routes').then((lines) => {
-        lines.features.forEach((ele) => {
+        console.log(lines.Routes)
+        lines.Routes.forEach((ele) => {
 		  var option = document.createElement('option')
-		  option.value = ele.LOCID;
-		  option.textContent= ele.LOCID + " - " + ele.FULLNAME
+		  option.value = ele.RouteID;
+		  option.textContent= ele.Name
 		  list.appendChild(option)
 	})
 	})
